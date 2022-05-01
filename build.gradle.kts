@@ -18,8 +18,13 @@ dependencies {
     // Paper API
     compileOnly(group = "com.destroystokyo.paper", name = "paper-api", version = "1.16.5-R0.1-SNAPSHOT")
 
+    // Cloud
+    implementation(group = "cloud.commandframework", name = "cloud-paper", version = "1.6.2")
+    implementation(group = "cloud.commandframework", name = "cloud-annotations", version = "1.6.2")
+
     // Guice
     implementation(group = "com.google.inject", name = "guice", version = "5.1.0")
+    implementation(group = "com.google.inject.extensions", name = "guice-throwingproviders", version = "5.1.0")
 }
 
 java {
