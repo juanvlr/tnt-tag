@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 
-public class Bootstrap {
+public class BootstrapImpl implements Boostrap {
 
     @InjectLogger
     private Logger logger;
@@ -16,11 +16,12 @@ public class Bootstrap {
     private final ListenerRegister listenerRegister;
 
     @Inject
-    public Bootstrap(CommandRegister commandRegister, ListenerRegister listenerRegister) {
+    public BootstrapImpl(CommandRegister commandRegister, ListenerRegister listenerRegister) {
         this.commandRegister = commandRegister;
         this.listenerRegister = listenerRegister;
     }
 
+    @Override
     public void bootstrap() {
         this.commandRegister.registerCommands();
         this.listenerRegister.registerListeners();
