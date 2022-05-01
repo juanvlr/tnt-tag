@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Stage;
 import fr.juanvalero.tnttag.api.APIModule;
 import fr.juanvalero.tnttag.api.bootstrap.Bootstrap;
+import fr.juanvalero.tnttag.core.CoreModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TntTagPlugin extends JavaPlugin {
@@ -14,7 +15,9 @@ public class TntTagPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
-            Injector injector = Guice.createInjector(PLUGIN_STAGE, new APIModule(this.getSLF4JLogger()));
+            Injector injector = Guice.createInjector(PLUGIN_STAGE,
+                    new APIModule(this, this.getSLF4JLogger()),
+                    new CoreModule());
             injector.getInstance(Bootstrap.class).bootstrap();
         } catch (Exception e) {
             super.getLogger().severe(
