@@ -1,4 +1,4 @@
-package fr.juanvalero.tnttag.api.logging;
+package fr.juanvalero.tnttag.api.logging.inject;
 
 import com.google.inject.MembersInjector;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 package fr.juanvalero.tnttag.api.listener;
 
-import fr.juanvalero.tnttag.api.logging.InjectLogger;
+import fr.juanvalero.tnttag.api.logging.inject.InjectLogger;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;

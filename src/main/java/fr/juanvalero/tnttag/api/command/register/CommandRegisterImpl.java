@@ -2,7 +2,7 @@ package fr.juanvalero.tnttag.api.command.register;
 
 import cloud.commandframework.annotations.AnnotationParser;
 import fr.juanvalero.tnttag.api.command.annotation.AnnotationParserProvider;
-import fr.juanvalero.tnttag.api.logging.InjectLogger;
+import fr.juanvalero.tnttag.api.logging.inject.InjectLogger;
 import org.bukkit.command.CommandSender;
 import org.slf4j.Logger;
 

@@ -1,4 +1,4 @@
-package fr.juanvalero.tnttag.api.logging;
+package fr.juanvalero.tnttag.api.logging.inject;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;

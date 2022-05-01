@@ -1,4 +1,4 @@
-package fr.juanvalero.tnttag.api.logging;
+package fr.juanvalero.tnttag.api.logging.inject;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;

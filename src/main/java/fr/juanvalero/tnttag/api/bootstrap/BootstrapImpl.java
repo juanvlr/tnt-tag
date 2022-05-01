@@ -2,7 +2,7 @@ package fr.juanvalero.tnttag.api.bootstrap;
 
 import fr.juanvalero.tnttag.api.command.register.CommandRegister;
 import fr.juanvalero.tnttag.api.listener.ListenerRegister;
-import fr.juanvalero.tnttag.api.logging.InjectLogger;
+import fr.juanvalero.tnttag.api.logging.inject.InjectLogger;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
