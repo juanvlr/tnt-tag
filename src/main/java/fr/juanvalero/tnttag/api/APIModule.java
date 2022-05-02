@@ -7,6 +7,8 @@ import fr.juanvalero.tnttag.api.command.CommandModule;
 import fr.juanvalero.tnttag.api.configuration.ConfigurationModule;
 import fr.juanvalero.tnttag.api.listener.ListenerModule;
 import fr.juanvalero.tnttag.api.logging.LoggingModule;
+import fr.juanvalero.tnttag.api.scoreboard.ScoreboardModule;
+import fr.juanvalero.tnttag.api.utils.UtilsModule;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -32,6 +34,8 @@ public class APIModule extends AbstractModule {
         install(new ConfigurationModule(this.configuration));
         install(new ListenerModule());
         install(new LoggingModule(this.logger));
+        install(new ScoreboardModule());
+        install(new UtilsModule());
     }
 
     @Provides
