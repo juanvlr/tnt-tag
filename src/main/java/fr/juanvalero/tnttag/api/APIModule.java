@@ -15,10 +15,12 @@ public class APIModule extends AbstractModule {
 
     private final Plugin plugin;
     private final Logger logger;
+    private final FileConfiguration configuration;
 
-    public APIModule(Plugin plugin, Logger logger) {
+    public APIModule(Plugin plugin, Logger logger, FileConfiguration configuration) {
         this.plugin = plugin;
         this.logger = logger;
+        this.configuration = configuration;
     }
 
     @Override

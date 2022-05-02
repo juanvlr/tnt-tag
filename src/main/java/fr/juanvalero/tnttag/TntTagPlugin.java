@@ -16,7 +16,7 @@ public class TntTagPlugin extends JavaPlugin {
     public void onEnable() {
         try {
             Injector injector = Guice.createInjector(PLUGIN_STAGE,
-                    new APIModule(this, this.getSLF4JLogger()),
+                    new APIModule(this, this.getSLF4JLogger(), this.getConfig()),
                     new CoreModule());
             injector.getInstance(Boostrap.class).bootstrap();
         } catch (Exception e) {
