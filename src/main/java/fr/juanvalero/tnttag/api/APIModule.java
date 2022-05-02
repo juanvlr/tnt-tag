@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import fr.juanvalero.tnttag.api.bootstrap.BootstrapModule;
 import fr.juanvalero.tnttag.api.command.CommandModule;
 import fr.juanvalero.tnttag.api.configuration.ConfigurationModule;
+import fr.juanvalero.tnttag.api.game.GameModule;
 import fr.juanvalero.tnttag.api.listener.ListenerModule;
 import fr.juanvalero.tnttag.api.logging.LoggingModule;
 import fr.juanvalero.tnttag.api.scoreboard.ScoreboardModule;
@@ -32,6 +33,7 @@ public class APIModule extends AbstractModule {
         install(new BootstrapModule());
         install(new CommandModule());
         install(new ConfigurationModule(this.configuration));
+        install(new GameModule());
         install(new ListenerModule());
         install(new LoggingModule(this.logger));
         install(new ScoreboardModule());
