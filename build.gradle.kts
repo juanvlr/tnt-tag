@@ -18,9 +18,6 @@ dependencies {
     // Paper API
     compileOnly(group = "com.destroystokyo.paper", name = "paper-api", version = "1.16.5-R0.1-SNAPSHOT")
 
-    // Adventure text serializer
-    implementation(group = "net.kyori", name = "adventure-text-serializer-plain", version = "4.10.1")
-
     // Cloud
     implementation(group = "cloud.commandframework", name = "cloud-paper", version = "1.6.2")
     implementation(group = "cloud.commandframework", name = "cloud-annotations", version = "1.6.2")
