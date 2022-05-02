@@ -4,9 +4,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import fr.juanvalero.tnttag.api.bootstrap.BootstrapModule;
 import fr.juanvalero.tnttag.api.command.CommandModule;
+import fr.juanvalero.tnttag.api.configuration.ConfigurationModule;
 import fr.juanvalero.tnttag.api.listener.ListenerModule;
 import fr.juanvalero.tnttag.api.logging.LoggingModule;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ public class APIModule extends AbstractModule {
     protected void configure() {
         install(new BootstrapModule());
         install(new CommandModule());
+        install(new ConfigurationModule(this.configuration));
         install(new ListenerModule());
         install(new LoggingModule(this.logger));
     }
