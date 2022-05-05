@@ -2,12 +2,12 @@ package fr.juanvalero.tnttag.core.command;
 
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
+import cloud.commandframework.annotations.CommandPermission;
 import fr.juanvalero.tnttag.api.game.Game;
 import org.bukkit.command.CommandSender;
 
 import javax.inject.Inject;
 
-// TODO Check permission
 public class EndCommand {
 
     private final Game game;
@@ -18,6 +18,7 @@ public class EndCommand {
     }
 
     @CommandMethod("end")
+    @CommandPermission("tnttag.command.end")
     @CommandDescription("Stoppe la partie")
     public void end(CommandSender sender) {
         this.game.stop();

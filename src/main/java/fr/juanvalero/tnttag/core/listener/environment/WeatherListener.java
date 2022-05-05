@@ -8,6 +8,8 @@ public class WeatherListener implements Listener {
 
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent event) {
-        event.setCancelled(true);
+        if (event.getCause() != WeatherChangeEvent.Cause.PLUGIN) {
+            event.setCancelled(true);
+        }
     }
 }

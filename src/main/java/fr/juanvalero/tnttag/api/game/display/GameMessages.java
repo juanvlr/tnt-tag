@@ -1,5 +1,6 @@
-package fr.juanvalero.tnttag.api.game;
+package fr.juanvalero.tnttag.api.game.display;
 
+import fr.juanvalero.tnttag.api.game.GameConstants;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -52,7 +53,7 @@ public class GameMessages {
     }
 
     public static Component getCreditMessage(int n) {
-        return GameMessages.CREDIT_MESSAGES[n];
+        return CREDIT_MESSAGES[n];
     }
 
     public static Title getRemainingTimeTitle(int remainingTime) {

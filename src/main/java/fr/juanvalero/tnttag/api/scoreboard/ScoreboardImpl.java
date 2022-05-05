@@ -23,7 +23,6 @@ public class ScoreboardImpl implements Scoreboard {
     private final ComponentSerializer componentSerializer;
     private final org.bukkit.scoreboard.Scoreboard scoreboard;
     private final Objective objective;
-
     private final SortedMap<Integer, String> lines;
 
     @AssistedInject

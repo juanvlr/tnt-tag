@@ -14,6 +14,13 @@ public interface PlayerCollection {
     int count();
 
     /**
+     * Checks if no player is present in this collection.
+     *
+     * @return {@code true} if no player is present if this collection, {@code false} otherwise.
+     */
+    boolean isEmpty();
+
+    /**
      * Adds the specified player in this collection.
      *
      * @param player The player to be added

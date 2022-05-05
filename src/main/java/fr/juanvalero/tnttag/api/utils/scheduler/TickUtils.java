@@ -1,4 +1,4 @@
-package fr.juanvalero.tnttag.api.utils;
+package fr.juanvalero.tnttag.api.utils.scheduler;
 
 public class TickUtils {
 

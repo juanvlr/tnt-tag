@@ -4,5 +4,5 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public interface AutoStartRunnableFactory {
 
-    BukkitRunnable createAutoStartRunnable();
+    BukkitRunnable createAutoStartRunnable(int time);
 }

@@ -6,9 +6,14 @@ import org.bukkit.entity.Player;
 public interface Game {
 
     /**
-     * Starts the game.
+     * Starts the game instantly.
      */
     void start();
+
+    /**
+     * Starts the game after a timer.
+     */
+    void startDelayed();
 
     /**
      * Stops the game.
@@ -16,8 +21,15 @@ public interface Game {
     void stop();
 
     /**
+     * Checks if the game is fast starting.
+     *
+     * @return {@code true} if the game is fast starting, {@code false} otherwise.
+     */
+    boolean isFastStarting();
+
+    /**
      * Checks if the game is closed.
-     * The game is closed if it has started or if it is full.
+     * The game is closed if it has started, if it is stopping or if it is full.
      *
      * @return {@code true} if the game is closed, {@code false} otherwise
      */

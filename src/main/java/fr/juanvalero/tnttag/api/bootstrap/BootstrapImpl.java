@@ -3,6 +3,7 @@ package fr.juanvalero.tnttag.api.bootstrap;
 import fr.juanvalero.tnttag.api.command.register.CommandRegister;
 import fr.juanvalero.tnttag.api.listener.ListenerRegister;
 import fr.juanvalero.tnttag.api.logging.inject.InjectLogger;
+import fr.juanvalero.tnttag.api.world.WorldService;
 import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 
@@ -16,12 +17,17 @@ public class BootstrapImpl implements Boostrap {
     private final Plugin plugin;
     private final CommandRegister commandRegister;
     private final ListenerRegister listenerRegister;
+    private final WorldService worldService;
 
     @Inject
-    public BootstrapImpl(Plugin plugin, CommandRegister commandRegister, ListenerRegister listenerRegister) {
+    public BootstrapImpl(Plugin plugin,
+                         CommandRegister commandRegister,
+                         ListenerRegister listenerRegister,
+                         WorldService worldService) {
         this.plugin = plugin;
         this.commandRegister = commandRegister;
         this.listenerRegister = listenerRegister;
+        this.worldService = worldService;
     }
 
     @Override
@@ -30,6 +36,8 @@ public class BootstrapImpl implements Boostrap {
 
         this.commandRegister.registerCommands();
         this.listenerRegister.registerListeners();
+
+        this.worldService.init();
 
         this.logger.info("TntTag enabled successfully");
     }

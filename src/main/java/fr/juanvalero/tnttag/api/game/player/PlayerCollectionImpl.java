@@ -21,6 +21,11 @@ public class PlayerCollectionImpl implements PlayerCollection {
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.players.isEmpty();
+    }
+
+    @Override
     public void add(Player player) {
         UUID playerId = player.getUniqueId();
 

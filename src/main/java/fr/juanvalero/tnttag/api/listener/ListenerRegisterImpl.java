@@ -13,11 +13,12 @@ import java.util.Set;
 
 public class ListenerRegisterImpl implements ListenerRegister {
 
+    @InjectLogger
+    private Logger logger;
+
     private final Plugin plugin;
     private final PluginManager pluginManager;
     private final Collection<Listener> listeners;
-    @InjectLogger
-    private Logger logger;
 
     @Inject
     public ListenerRegisterImpl(Plugin plugin, PluginManager pluginManager, Set<Listener> listeners) {

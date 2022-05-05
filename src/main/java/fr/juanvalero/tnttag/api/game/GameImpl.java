@@ -2,45 +2,46 @@ package fr.juanvalero.tnttag.api.game;
 
 import fr.juanvalero.tnttag.api.configuration.Configuration;
 import fr.juanvalero.tnttag.api.configuration.inject.InjectConfiguration;
+import fr.juanvalero.tnttag.api.game.display.GameMessages;
+import fr.juanvalero.tnttag.api.game.display.ScoreboardCreditUpdater;
 import fr.juanvalero.tnttag.api.game.player.PlayerCollection;
 import fr.juanvalero.tnttag.api.game.player.PlayerCollectionImpl;
 import fr.juanvalero.tnttag.api.game.start.AutoStartRunnableFactory;
-import fr.juanvalero.tnttag.api.scoreboard.Scoreboard;
 import fr.juanvalero.tnttag.api.scoreboard.ScoreboardService;
-import fr.juanvalero.tnttag.api.utils.TickUtils;
+import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import net.kyori.adventure.text.Component;
+import org.bukkit.GameMode;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class GameImpl implements Game {
 
+    private final ScoreboardCreditUpdater scoreboardCreditUpdater;
+
     private final ScoreboardService scoreboardService;
+    @InjectConfiguration
+    private Configuration configuration;
     private final Plugin plugin;
     private final AutoStartRunnableFactory autoStartRunnableFactory;
     private final PlayerCollection players;
-    private final Map<UUID, BukkitRunnable> scoreboardUpdaters;
-    @InjectConfiguration
-    private Configuration configuration;
     private GameState state;
     private BukkitRunnable autoStartRunnable;
 
     @Inject
     public GameImpl(ScoreboardService scoreboardService,
+                    ScoreboardCreditUpdater scoreboardCreditUpdater,
                     Plugin plugin,
                     AutoStartRunnableFactory autoStartRunnableFactory) {
         this.scoreboardService = scoreboardService;
+        this.scoreboardCreditUpdater = scoreboardCreditUpdater;
         this.plugin = plugin;
         this.autoStartRunnableFactory = autoStartRunnableFactory;
         this.players = new PlayerCollectionImpl();
         this.state = GameState.WAITING;
-        this.scoreboardUpdaters = new HashMap<>();
     }
 
     @Override
@@ -48,6 +49,8 @@ public class GameImpl implements Game {
         if (this.hasStarted()) {
             throw new IllegalStateException("The game has already started");
         }
+
+        this.cancelAutoStart();
 
         this.players.forEach(player -> {
             this.scoreboardService.getScoreboard(player).eraseLines(3, 4);
@@ -61,64 +64,83 @@ public class GameImpl implements Game {
     }
 
     @Override
+    public void startDelayed() {
+        if (this.hasStarted()) {
+            throw new IllegalStateException("The game has already start");
+        }
+
+        if (this.isFastStarting()) {
+            throw new IllegalStateException("The game is already fast starting");
+        }
+
+        if (this.state == GameState.REGULAR_STARTING) {
+            // The game was already starting, it means that someone speeds up the time
+            // We cancel the runnable before running the new one
+            this.cancelAutoStart();
+        }
+
+        this.autoStartRunnable = this.autoStartRunnableFactory.createAutoStartRunnable(10);
+        this.autoStartRunnable.runTaskTimer(this.plugin, 0L, TickUtils.TICKS_PER_SECOND);
+
+        this.state = GameState.FAST_STARTING;
+    }
+
+    @Override
     public void stop() {
-        if (this.state == GameState.STOPPED) {
+        if (this.state == GameState.STOPPING) {
             throw new IllegalStateException("The game is already stopped");
         }
 
-        this.state = GameState.STOPPED;
+        this.state = GameState.STOPPING;
+    }
+
+    @Override
+    public boolean isFastStarting() {
+        return this.state == GameState.FAST_STARTING;
     }
 
     @Override
     public boolean isClosed() {
-        return this.hasStarted() || this.state == GameState.STOPPED || this.players.count() == GameConstants.MAXIMUM_PLAYER_COUNT;
+        return this.hasStarted() || this.state == GameState.STOPPING || this.players.count() == GameConstants.MAXIMUM_PLAYER_COUNT;
     }
 
     @Override
     public void addPlayer(Player player) {
         if (this.isClosed()) {
-            throw new IllegalStateException("The game is closed");
+            throw new IllegalStateException(String.format("Can't add %s to the game since it already started", player.getName()));
         }
 
         this.players.add(player);
 
         this.clean(player);
 
-        player.teleport(this.configuration.getLobbyLocation());
+        this.scoreboardService.createScoreboard(player, GameMessages.getGameTitle());
 
-        Scoreboard scoreboard = this.scoreboardService.createScoreboard(player, GameMessages.getGameTitle());
-
-        // Scoreboard credit updater
-        BukkitRunnable scoreboardUpdater = new BukkitRunnable() {
-            private int ticks = 0;
-
-            @Override
-            public void run() {
-                scoreboard.updateLine(2, GameMessages.getCreditMessage(this.ticks % 3));
-                this.ticks++;
-            }
-        };
-
-        this.scoreboardUpdaters.put(player.getUniqueId(), scoreboardUpdater);
-
-        scoreboardUpdater.runTaskTimer(this.plugin, 0, TickUtils.TICKS_PER_SECOND);
+        this.scoreboardCreditUpdater.addPlayer(player);
 
         // Broadcast
         this.players.forEach(p -> {
                     p.sendMessage(GameMessages.getConnectionMessage(p, this.players.count()));
 
-                    if (this.players.count() < GameConstants.MINIMUM_PLAYER_COUNT) {
+                    // We don't want to update the scoreboard if the game is starting
+                    // Regular starting : the minimum amount of players has already been reached
+                    // Fast starting : we don't need a minimum amount of players
+                    if (!this.isStarting() && this.players.count() < GameConstants.MINIMUM_PLAYER_COUNT) {
                         // Update the amount of missing players
                         this.updateMissingPlayerCount(p);
                     }
                 }
         );
 
-        if (this.players.count() == GameConstants.MINIMUM_PLAYER_COUNT) {
+        if (!this.isFastStarting() && this.players.count() == GameConstants.MINIMUM_PLAYER_COUNT) {
             // We now have the needed amount of players to start the game
-            this.autoStartRunnable = this.autoStartRunnableFactory.createAutoStartRunnable();
+            this.state = GameState.REGULAR_STARTING;
+
+            this.autoStartRunnable = this.autoStartRunnableFactory.createAutoStartRunnable(60);
             this.autoStartRunnable.runTaskTimer(this.plugin, 0L, TickUtils.TICKS_PER_SECOND);
         }
+
+        player.teleport(this.configuration.getLobbyLocation());
     }
 
     @Override
@@ -127,27 +149,31 @@ public class GameImpl implements Game {
 
         this.scoreboardService.deleteScoreboard(player);
 
-        BukkitRunnable scoreboardUpdater = this.scoreboardUpdaters.remove(player.getUniqueId());
-        scoreboardUpdater.cancel();
+        this.scoreboardCreditUpdater.removePlayer(player);
 
-        if (this.state == GameState.WAITING) {
+        if (this.state == GameState.WAITING || this.isStarting()) {
             // Broadcast
             this.players.forEach(p -> p.sendMessage(GameMessages.getDisconnectionMessage(player, this.players.count())));
-
-            if (this.players.count() < GameConstants.MINIMUM_PLAYER_COUNT && this.autoStartRunnable != null) {
-                // There are not enough players left to start the game
-                this.players.forEach(p -> {
-                    p.setLevel(0);
-                    p.setExp(0.f);
-
-                    // Reset the scoreboard to the waiting state
-                    this.updateMissingPlayerCount(p);
-                });
-
-                this.autoStartRunnable.cancel();
-                this.autoStartRunnable = null;
-            }
         }
+
+        if (this.isFastStarting() && this.players.isEmpty()) {
+            // Cancel the fast starting as there is no player
+            this.cancelAutoStart();
+
+            this.state = GameState.WAITING;
+        } else if (this.state == GameState.REGULAR_STARTING && this.players.count() < GameConstants.MINIMUM_PLAYER_COUNT) {
+            // There are not enough players left to start the game
+            this.players.forEach(this::updateMissingPlayerCount); // Reset the scoreboard to the waiting state
+
+            this.cancelAutoStart();
+
+            this.state = GameState.WAITING;
+        }
+    }
+
+    private void cancelAutoStart() {
+        this.autoStartRunnable.cancel();
+        this.autoStartRunnable = null;
     }
 
     @Override
@@ -156,16 +182,26 @@ public class GameImpl implements Game {
     }
 
     /**
+     * Checks if the game is starting.
+     *
+     * @return {@code true} if the game is starting, {@code false} otherwise.
+     */
+    private boolean isStarting() {
+        return this.state == GameState.REGULAR_STARTING || this.isFastStarting();
+    }
+
+    /**
      * Checks if the game has started.
      *
      * @return {@code true} if the game has started, {@code false} otherwise
      */
     private boolean hasStarted() {
-        // TODO Add GameState.STOPPED too ?
         return this.state == GameState.IN_GAME;
     }
 
     private void clean(Player player) {
+        player.setGameMode(GameMode.ADVENTURE);
+
         player.getInventory().clear();
 
         player.setLevel(0);

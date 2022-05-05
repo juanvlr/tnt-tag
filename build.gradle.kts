@@ -22,6 +22,9 @@ dependencies {
     implementation(group = "cloud.commandframework", name = "cloud-paper", version = "1.6.2")
     implementation(group = "cloud.commandframework", name = "cloud-annotations", version = "1.6.2")
 
+    // IF
+    implementation(group = "com.github.stefvanschie.inventoryframework", name = "IF", version = "0.10.5")
+
     // Guice
     implementation(group = "com.google.inject", name = "guice", version = "5.1.0")
     implementation(group = "com.google.inject.extensions", name = "guice-assistedinject", version = "5.1.0")

@@ -7,11 +7,19 @@ public enum GameState {
      */
     WAITING,
     /**
+     * Game is starting, no matter the amount of players
+     */
+    FAST_STARTING,
+    /**
+     * Game is starting.
+     */
+    REGULAR_STARTING,
+    /**
      * Game has started.
      */
     IN_GAME,
     /**
-     * Game is stopped.
+     * Game is stopping.
      */
-    STOPPED
+    STOPPING
 }
