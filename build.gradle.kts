@@ -12,6 +12,11 @@ description = "A bukkit TntTag plugin"
 
 repositories {
     mavenCentral()
+
+    maven {
+        name = "codemc-repo"
+        url = uri("https://repo.codemc.org/repository/maven-public/")
+    }
 }
 
 dependencies {
@@ -24,6 +29,9 @@ dependencies {
 
     // IF
     implementation(group = "com.github.stefvanschie.inventoryframework", name = "IF", version = "0.10.5")
+
+    // NBT-API
+    implementation(group = "de.tr7zw", name = "item-nbt-api", version = "2.9.2")
 
     // Guice
     implementation(group = "com.google.inject", name = "guice", version = "5.1.0")
@@ -45,6 +53,8 @@ tasks {
 tasks {
     named<ShadowJar>("shadowJar") {
         archiveFileName.set("${project.properties["plugin.name"]}.${archiveExtension.get()}")
+
+        relocate("de.tr7zw", "libs.de.tr7zw")
     }
 }
 
@@ -53,4 +63,9 @@ spigot {
     name = project.properties["plugin.name"].toString()
     authors = listOf(project.properties["plugin.author"].toString())
     apiVersion = project.properties["plugin.apiversion"].toString()
+    libraries = listOf(
+        "com.google.inject:guice:5.1.0",
+        "com.google.inject.extensions:guice-assistedinject:5.1.0",
+        "com.google.inject.extensions:guice-throwingproviders:5.1.0"
+    )
 }

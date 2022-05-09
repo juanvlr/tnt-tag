@@ -2,9 +2,7 @@ package fr.juanvalero.tnttag.api.game.player;
 
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class PlayerCollectionImpl implements PlayerCollection {
@@ -45,6 +43,23 @@ public class PlayerCollectionImpl implements PlayerCollection {
         }
 
         this.players.remove(playerId);
+    }
+
+    @Override
+    public Player getRandom(Player excludedPlayer) {
+        if (this.players.size() == 1) {
+            // The collection contains only the excluded player
+            throw new RuntimeException(String.format("No player other than %s was found", excludedPlayer.getName()));
+        }
+
+        UUID playerId = excludedPlayer.getUniqueId();
+
+        Set<UUID> includedPlayerIds = this.players.keySet();
+        includedPlayerIds.remove(playerId);
+
+        List<UUID> includedPlayerId = new ArrayList<>(includedPlayerIds);
+
+        return this.players.get(includedPlayerId.get(new Random().nextInt(this.count() - 1)));
     }
 
     @Override

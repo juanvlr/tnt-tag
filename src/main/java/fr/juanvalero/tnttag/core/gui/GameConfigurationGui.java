@@ -14,12 +14,12 @@ import fr.juanvalero.tnttag.api.configuration.inject.InjectConfiguration;
 import fr.juanvalero.tnttag.api.game.Game;
 import fr.juanvalero.tnttag.api.game.GameConstants;
 import fr.juanvalero.tnttag.api.game.GameTime;
-import fr.juanvalero.tnttag.api.utils.gui.MaterialToggleButton;
-import fr.juanvalero.tnttag.api.utils.gui.MaterialToggleButtonItem;
-import fr.juanvalero.tnttag.api.utils.gui.TitleToggleButton;
-import fr.juanvalero.tnttag.api.utils.gui.TitleToggleButtonItem;
 import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
 import fr.juanvalero.tnttag.api.world.WorldService;
+import fr.juanvalero.tnttag.core.gui.utils.MaterialToggleButton;
+import fr.juanvalero.tnttag.core.gui.utils.MaterialToggleButtonItem;
+import fr.juanvalero.tnttag.core.gui.utils.TitleToggleButton;
+import fr.juanvalero.tnttag.core.gui.utils.TitleToggleButtonItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
@@ -27,7 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.inject.Inject;
 
-import static fr.juanvalero.tnttag.api.utils.gui.GuiUtils.*;
+import static fr.juanvalero.tnttag.core.gui.utils.GuiUtils.*;
 
 public class GameConfigurationGui {
 

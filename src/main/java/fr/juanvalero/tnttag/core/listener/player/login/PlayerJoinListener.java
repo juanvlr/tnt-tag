@@ -1,7 +1,6 @@
-package fr.juanvalero.tnttag.core.listener.login;
+package fr.juanvalero.tnttag.core.listener.player.login;
 
 import fr.juanvalero.tnttag.api.game.Game;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -19,9 +18,7 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        this.game.addPlayer(player);
+        this.game.addPlayer(event.getPlayer());
 
         event.joinMessage(null);
     }

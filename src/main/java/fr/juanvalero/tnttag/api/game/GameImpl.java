@@ -4,6 +4,7 @@ import fr.juanvalero.tnttag.api.configuration.Configuration;
 import fr.juanvalero.tnttag.api.configuration.inject.InjectConfiguration;
 import fr.juanvalero.tnttag.api.game.display.GameMessages;
 import fr.juanvalero.tnttag.api.game.display.ScoreboardCreditUpdater;
+import fr.juanvalero.tnttag.api.game.item.ItemService;
 import fr.juanvalero.tnttag.api.game.player.PlayerCollection;
 import fr.juanvalero.tnttag.api.game.player.PlayerCollectionImpl;
 import fr.juanvalero.tnttag.api.game.start.AutoStartRunnableFactory;
@@ -20,13 +21,14 @@ import javax.inject.Inject;
 
 public class GameImpl implements Game {
 
-    private final ScoreboardCreditUpdater scoreboardCreditUpdater;
-
-    private final ScoreboardService scoreboardService;
     @InjectConfiguration
     private Configuration configuration;
+
+    private final ScoreboardService scoreboardService;
+    private final ScoreboardCreditUpdater scoreboardCreditUpdater;
     private final Plugin plugin;
     private final AutoStartRunnableFactory autoStartRunnableFactory;
+    private final ItemService itemService;
     private final PlayerCollection players;
     private GameState state;
     private BukkitRunnable autoStartRunnable;
@@ -35,11 +37,13 @@ public class GameImpl implements Game {
     public GameImpl(ScoreboardService scoreboardService,
                     ScoreboardCreditUpdater scoreboardCreditUpdater,
                     Plugin plugin,
-                    AutoStartRunnableFactory autoStartRunnableFactory) {
+                    AutoStartRunnableFactory autoStartRunnableFactory,
+                    ItemService itemService) {
         this.scoreboardService = scoreboardService;
         this.scoreboardCreditUpdater = scoreboardCreditUpdater;
         this.plugin = plugin;
         this.autoStartRunnableFactory = autoStartRunnableFactory;
+        this.itemService = itemService;
         this.players = new PlayerCollectionImpl();
         this.state = GameState.WAITING;
     }
@@ -54,6 +58,13 @@ public class GameImpl implements Game {
 
         this.players.forEach(player -> {
             this.scoreboardService.getScoreboard(player).eraseLines(3, 4);
+
+            if (this.configuration.isItemEnabled()) {
+                this.itemService.getRandomItems(this.configuration.getItemAmount())
+                        .forEach(player.getInventory()::setItem);
+
+                player.updateInventory();
+            }
 
             player.sendMessage(Component.text("La partie commence !"));
 
@@ -212,8 +223,8 @@ public class GameImpl implements Game {
         player.setFoodLevel(20);
     }
 
-    private void updateMissingPlayerCount(Player p) {
-        this.scoreboardService.getScoreboard(p)
+    private void updateMissingPlayerCount(Player player) {
+        this.scoreboardService.getScoreboard(player)
                 .updateLine(4, GameMessages.getMissingPlayerCountMessage(this.players.count()));
     }
 }

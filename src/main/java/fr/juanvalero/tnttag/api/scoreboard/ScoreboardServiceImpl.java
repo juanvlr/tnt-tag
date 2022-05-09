@@ -20,7 +20,7 @@ public class ScoreboardServiceImpl implements ScoreboardService {
     }
 
     @Override
-    public Scoreboard createScoreboard(Player player, Component title) {
+    public void createScoreboard(Player player, Component title) {
         UUID playerId = player.getUniqueId();
 
         if (this.scoreboards.containsKey(playerId)) {
@@ -30,7 +30,6 @@ public class ScoreboardServiceImpl implements ScoreboardService {
         Scoreboard scoreboard = this.scoreboardFactory.createScoreboard(player, title);
         this.scoreboards.put(playerId, scoreboard);
 
-        return scoreboard;
     }
 
     @Override

@@ -10,9 +10,8 @@ public interface ScoreboardService {
      *
      * @param player The player to whom the scoreboard belongs
      * @param title  The title of the scoreboard
-     * @return The created scoreboard
      */
-    Scoreboard createScoreboard(Player player, Component title);
+    void createScoreboard(Player player, Component title);
 
     /**
      * Deletes the scoreboard of the specified player.

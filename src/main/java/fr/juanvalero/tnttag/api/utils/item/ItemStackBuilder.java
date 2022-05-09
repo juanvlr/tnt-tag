@@ -11,6 +11,9 @@ import java.util.List;
 
 public class ItemStackBuilder {
 
+    private static final Component EMPTY_COMPONENT = Component.empty()
+            .style(Style.style().decoration(TextDecoration.ITALIC, false));
+
     private final Material material;
     private final int amount;
     private Component name;
@@ -41,15 +44,24 @@ public class ItemStackBuilder {
         ItemStack item = new ItemStack(this.material, this.amount);
 
         ItemMeta meta = item.getItemMeta();
-        Component name = Component.empty()
-                .style(Style.style().decoration(TextDecoration.ITALIC, false));
+
+        Component name = EMPTY_COMPONENT;
 
         if (this.name != null) {
             name = name.append(this.name);
         }
 
         meta.displayName(name);
-        meta.lore(this.lore);
+
+        List<Component> lore = null;
+
+        if (this.lore != null) {
+            lore = this.lore.stream()
+                    .map(EMPTY_COMPONENT::append)
+                    .toList();
+        }
+
+        meta.lore(lore);
 
         item.setItemMeta(meta);
 

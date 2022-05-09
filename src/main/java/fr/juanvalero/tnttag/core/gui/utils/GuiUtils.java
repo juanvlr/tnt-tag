@@ -1,4 +1,4 @@
-package fr.juanvalero.tnttag.api.utils.gui;
+package fr.juanvalero.tnttag.core.gui.utils;
 
 import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;
 import com.github.stefvanschie.inventoryframework.font.util.Font;
@@ -24,7 +24,6 @@ public class GuiUtils {
 
         return gui;
     }
-
 
     public static Label createLabel(int x, int y, Font font, String text, String name) {
         Label label = new Label(x, y, 1, 1, font);

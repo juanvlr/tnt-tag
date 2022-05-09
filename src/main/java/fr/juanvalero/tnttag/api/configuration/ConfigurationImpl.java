@@ -25,6 +25,11 @@ public class ConfigurationImpl implements Configuration {
     }
 
     @Override
+    public String getWorld() {
+        return this.configuration.getString("world");
+    }
+
+    @Override
     public Location getLobbyLocation() {
         return this.configuration.getLocation("lobby-location");
     }

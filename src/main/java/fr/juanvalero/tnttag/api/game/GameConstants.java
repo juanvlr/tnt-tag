@@ -15,5 +15,5 @@ public class GameConstants {
     /**
      * The maximum amount of items to be given
      */
-    public static final int MAXIMUM_ITEM_COUNT = 64;
+    public static final int MAXIMUM_ITEM_COUNT = 7;
 }

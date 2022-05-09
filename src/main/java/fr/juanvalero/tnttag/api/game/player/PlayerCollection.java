@@ -35,6 +35,14 @@ public interface PlayerCollection {
     void remove(Player player);
 
     /**
+     * Returns a random player excepts whose specified.
+     *
+     * @param excludedPlayer The player to exclude.
+     * @return A random player excepts whose specified.
+     */
+    Player getRandom(Player excludedPlayer);
+
+    /**
      * Performs an action for each player in this collection.
      *
      * @param action The action to perform

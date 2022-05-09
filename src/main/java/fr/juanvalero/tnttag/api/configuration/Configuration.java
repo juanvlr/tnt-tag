@@ -7,6 +7,13 @@ import org.bukkit.WeatherType;
 public interface Configuration {
 
     /**
+     * Returns the world.
+     *
+     * @return The world
+     */
+    String getWorld();
+
+    /**
      * Returns the location of the lobby.
      *
      * @return The location of the lobby

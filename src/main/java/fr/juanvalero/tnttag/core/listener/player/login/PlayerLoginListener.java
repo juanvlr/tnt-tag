@@ -1,4 +1,4 @@
-package fr.juanvalero.tnttag.core.listener.login;
+package fr.juanvalero.tnttag.core.listener.player.login;
 
 import fr.juanvalero.tnttag.api.game.Game;
 import net.kyori.adventure.text.Component;

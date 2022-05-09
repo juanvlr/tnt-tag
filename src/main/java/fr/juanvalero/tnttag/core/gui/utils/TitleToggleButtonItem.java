@@ -1,4 +1,4 @@
-package fr.juanvalero.tnttag.api.utils.gui;
+package fr.juanvalero.tnttag.core.gui.utils;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 

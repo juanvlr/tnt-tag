@@ -1,4 +1,4 @@
-package fr.juanvalero.tnttag.core.listener;
+package fr.juanvalero.tnttag.core.listener.player;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

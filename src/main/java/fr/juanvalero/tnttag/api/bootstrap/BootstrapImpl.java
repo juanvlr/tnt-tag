@@ -32,7 +32,7 @@ public class BootstrapImpl implements Boostrap {
 
     @Override
     public void bootstrap() {
-        this.plugin.saveConfig();
+        this.plugin.saveConfig(); // TODO Check if it results in a bug when no configuration is provided
 
         this.commandRegister.registerCommands();
         this.listenerRegister.registerListeners();
