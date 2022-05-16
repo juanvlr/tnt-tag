@@ -2,7 +2,6 @@ package fr.juanvalero.tnttag.api.command.register;
 
 import cloud.commandframework.annotations.AnnotationParser;
 import fr.juanvalero.tnttag.api.command.annotation.AnnotationParserProvider;
-import fr.juanvalero.tnttag.api.logging.inject.InjectLogger;
 import org.bukkit.command.CommandSender;
 import org.slf4j.Logger;
 
@@ -18,7 +17,7 @@ public class CommandRegisterImpl implements CommandRegister {
 
     private final AnnotationParserProvider annotationParserProvider;
     private final Collection<Object> commands;
-    @InjectLogger
+    @Inject
     private Logger logger;
 
     @Inject

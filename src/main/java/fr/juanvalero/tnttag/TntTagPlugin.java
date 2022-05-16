@@ -3,9 +3,7 @@ package fr.juanvalero.tnttag;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
-import fr.juanvalero.tnttag.api.APIModule;
-import fr.juanvalero.tnttag.api.bootstrap.Boostrap;
-import fr.juanvalero.tnttag.core.CoreModule;
+import fr.juanvalero.tnttag.bootstrap.Boostrap;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TntTagPlugin extends JavaPlugin {
@@ -14,12 +12,12 @@ public class TntTagPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        super.getSLF4JLogger().info("== Enabling TntTag v{} by Choukas ==", super.getDescription().getVersion());
+        super.getSLF4JLogger().info("== TntTag v{} by Choukas ==", super.getDescription().getVersion());
+
+        super.reloadConfig();
 
         try {
-            Injector injector = Guice.createInjector(PLUGIN_STAGE,
-                    new APIModule(this, this.getSLF4JLogger(), this.getConfig()),
-                    new CoreModule());
+            Injector injector = Guice.createInjector(PLUGIN_STAGE, new TntTagModule(this));
             injector.getInstance(Boostrap.class).bootstrap();
 
             super.getSLF4JLogger().info("TntTag enabled successfully");

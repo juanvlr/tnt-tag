@@ -1,14 +1,14 @@
 package fr.juanvalero.tnttag.api.configuration;
 
-import fr.juanvalero.tnttag.api.configuration.inject.InjectConfiguration;
 import fr.juanvalero.tnttag.api.world.GameTime;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 
+import java.util.Optional;
+
 /**
  * The configuration of the game.
  * Values can be set using the config.yml file or the configuration gui.
- * The configuration instance can be easily injected in any class by using the {@link InjectConfiguration} annotation.
  */
 public interface Configuration {
 
@@ -22,16 +22,16 @@ public interface Configuration {
     /**
      * Returns the location of the lobby.
      *
-     * @return The location of the lobby
+     * @return The location of the lobby, if present
      */
-    Location getLobbyLocation();
+    Optional<Location> getLobbyLocation();
 
     /**
      * Returns the location of the start.
      *
-     * @return The location of the start
+     * @return The location of the start, if present
      */
-    Location getStartLocation();
+    Optional<Location> getStartLocation();
 
     /**
      * Enables the destruction of tnts.

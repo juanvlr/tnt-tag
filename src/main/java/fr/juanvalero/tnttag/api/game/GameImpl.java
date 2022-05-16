@@ -1,7 +1,6 @@
 package fr.juanvalero.tnttag.api.game;
 
 import fr.juanvalero.tnttag.api.configuration.Configuration;
-import fr.juanvalero.tnttag.api.configuration.inject.InjectConfiguration;
 import fr.juanvalero.tnttag.api.game.display.GameComponents;
 import fr.juanvalero.tnttag.api.game.display.ScoreboardCreditUpdater;
 import fr.juanvalero.tnttag.api.game.event.EventService;
@@ -37,7 +36,7 @@ import java.util.Random;
 @SuppressWarnings("ConstantConditions")
 public class GameImpl implements Game {
 
-    @InjectConfiguration
+    @Inject
     private Configuration configuration;
 
     private final ScoreboardService scoreboardService;
@@ -95,7 +94,8 @@ public class GameImpl implements Game {
             scoreboard.updateLine(4, GameComponents.getAlivePlayerAmountMessage(this.players.count()));
 
             player.showTitle(GameComponents.getStartMessage());
-            player.teleport(this.configuration.getStartLocation());
+
+            this.configuration.getStartLocation().ifPresent(player::teleport);
         });
 
         this.state = GameState.IN_GAME;
@@ -210,7 +210,7 @@ public class GameImpl implements Game {
             this.autoStartRunnable.runTaskTimer(this.plugin, 0L, TickUtils.TICKS_PER_SECOND);
         }
 
-        joiner.teleport(this.configuration.getLobbyLocation());
+        this.configuration.getLobbyLocation().ifPresent(joiner::teleport);
     }
 
     @Override

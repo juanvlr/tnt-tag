@@ -5,13 +5,18 @@ import fr.juanvalero.tnttag.api.world.GameTime;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Default {@link Configuration} implementation.
  */
 public class ConfigurationImpl implements Configuration {
+
+    @Inject
+    private Logger logger;
 
     private final FileConfiguration configuration;
 
@@ -29,17 +34,25 @@ public class ConfigurationImpl implements Configuration {
 
     @Override
     public String getWorld() {
-        return this.configuration.getString("world");
+        return this.configuration.getString("world", "world");
     }
 
     @Override
-    public Location getLobbyLocation() {
-        return this.configuration.getLocation("lobby-location");
+    public Optional<Location> getLobbyLocation() {
+        if (!this.configuration.contains("lobby-location")) {
+            this.logger.warn("No lobby location has been provided in the configuration");
+        }
+
+        return Optional.ofNullable(this.configuration.getLocation("lobby-location"));
     }
 
     @Override
-    public Location getStartLocation() {
-        return this.configuration.getLocation("start-location");
+    public Optional<Location> getStartLocation() {
+        if (!this.configuration.contains("start-location")) {
+            this.logger.warn("No start location has been provided in the configuration");
+        }
+
+        return Optional.ofNullable(this.configuration.getLocation("start-location"));
     }
 
     @Override

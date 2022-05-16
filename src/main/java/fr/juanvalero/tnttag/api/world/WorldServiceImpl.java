@@ -1,7 +1,6 @@
 package fr.juanvalero.tnttag.api.world;
 
 import fr.juanvalero.tnttag.api.configuration.Configuration;
-import fr.juanvalero.tnttag.api.configuration.inject.InjectConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -9,6 +8,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Firework;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class WorldServiceImpl implements WorldService {
 
-    @InjectConfiguration
+    @Inject
     private Configuration configuration;
 
     @Override

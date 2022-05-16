@@ -1,6 +1,5 @@
 package fr.juanvalero.tnttag.api.listener;
 
-import fr.juanvalero.tnttag.api.logging.inject.InjectLogger;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -13,7 +12,7 @@ import java.util.Set;
 
 public class ListenerRegisterImpl implements ListenerRegister {
 
-    @InjectLogger
+    @Inject
     private Logger logger;
 
     private final Plugin plugin;

@@ -2,7 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     java
-    id("kr.entree.spigradle") version "2.3.4"
+    id("kr.entree.spigradle") version "2.4.2"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
