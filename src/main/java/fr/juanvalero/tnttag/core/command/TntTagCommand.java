@@ -24,8 +24,10 @@ public class TntTagCommand {
     @CommandPermission("tnttag.command.tnt-tag")
     @CommandDescription("Configurer la partie")
     public void tntTag(Player sender) {
-        if (!this.game.isFastStarting()) {
-            this.gameConfigurationGui.build().show(sender);
+        if (this.game.isFastStarting() || this.game.hasStarted()) {
+            return;
         }
+
+        this.gameConfigurationGui.build().show(sender);
     }
 }

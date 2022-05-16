@@ -9,6 +9,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
+/**
+ * Contains utility methods to easily build a {@link ItemStack}.
+ */
 public class ItemStackBuilder {
 
     private static final Component EMPTY_COMPONENT = Component.empty()

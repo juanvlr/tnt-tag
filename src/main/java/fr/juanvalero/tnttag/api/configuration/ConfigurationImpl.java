@@ -1,13 +1,16 @@
 package fr.juanvalero.tnttag.api.configuration;
 
 import fr.juanvalero.tnttag.api.game.GameConstants;
-import fr.juanvalero.tnttag.api.game.GameTime;
+import fr.juanvalero.tnttag.api.world.GameTime;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import javax.inject.Inject;
 
+/**
+ * Default {@link Configuration} implementation.
+ */
 public class ConfigurationImpl implements Configuration {
 
     private final FileConfiguration configuration;
@@ -80,7 +83,7 @@ public class ConfigurationImpl implements Configuration {
     }
 
     @Override
-    public boolean isItemEnabled() {
+    public boolean allowItems() {
         return this.isItemEnabled;
     }
 

@@ -1,5 +1,6 @@
 package fr.juanvalero.tnttag.core.listener.player;
 
+import fr.juanvalero.tnttag.api.game.Game;
 import fr.juanvalero.tnttag.api.game.item.ItemService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,15 +14,23 @@ import javax.inject.Inject;
 
 public class PlayerInteractListener implements Listener {
 
+    private final Game game;
     private final ItemService itemService;
 
     @Inject
-    public PlayerInteractListener(ItemService itemService) {
+    public PlayerInteractListener(Game game, ItemService itemService) {
+        this.game = game;
         this.itemService = itemService;
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (!this.game.hasStarted()) {
+            event.setCancelled(true);
+
+            return;
+        }
+
         Action action = event.getAction();
 
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {

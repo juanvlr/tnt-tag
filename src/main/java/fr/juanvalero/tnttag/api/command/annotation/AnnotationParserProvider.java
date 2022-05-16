@@ -4,6 +4,9 @@ import cloud.commandframework.annotations.AnnotationParser;
 import com.google.inject.throwingproviders.CheckedProvider;
 import org.bukkit.command.CommandSender;
 
+/**
+ * Provides the {@link AnnotationParser}.
+ */
 public interface AnnotationParserProvider extends CheckedProvider<AnnotationParser<CommandSender>> {
 
 }

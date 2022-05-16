@@ -1,9 +1,12 @@
 package fr.juanvalero.tnttag.api.command.register;
 
+/**
+ * A register of the plugin commands.
+ */
 public interface CommandRegister {
 
     /**
-     * Registers the commands in the plugin.
+     * Registers the commands of this register inside the plugin.
      */
     void registerCommands();
 }

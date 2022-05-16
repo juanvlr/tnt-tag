@@ -13,8 +13,8 @@ import fr.juanvalero.tnttag.api.configuration.Configuration;
 import fr.juanvalero.tnttag.api.configuration.inject.InjectConfiguration;
 import fr.juanvalero.tnttag.api.game.Game;
 import fr.juanvalero.tnttag.api.game.GameConstants;
-import fr.juanvalero.tnttag.api.game.GameTime;
 import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
+import fr.juanvalero.tnttag.api.world.GameTime;
 import fr.juanvalero.tnttag.api.world.WorldService;
 import fr.juanvalero.tnttag.core.gui.utils.MaterialToggleButton;
 import fr.juanvalero.tnttag.core.gui.utils.MaterialToggleButtonItem;
@@ -31,10 +31,11 @@ import static fr.juanvalero.tnttag.core.gui.utils.GuiUtils.*;
 
 public class GameConfigurationGui {
 
-    private final Game game;
-    private final WorldService worldService;
     @InjectConfiguration
     private Configuration configuration;
+
+    private final Game game;
+    private final WorldService worldService;
 
     @Inject
     public GameConfigurationGui(Game game, WorldService worldService) {
@@ -198,6 +199,10 @@ public class GameConfigurationGui {
                         .withName(Component.text("Commencer la partie"))
                         .build(),
                 event -> {
+                    if (this.game.getPlayers().count() == 1) {
+                        return;
+                    }
+
                     this.game.startDelayed();
                     //noinspection ConstantConditions
                     event.getClickedInventory().close(); // Not sure about this one
@@ -223,7 +228,7 @@ public class GameConfigurationGui {
         mainGui.addPane(eventActivationButton);
 
         Pane itemActivationButton = createTitleToggleButton(
-                new TitleToggleButton(5, 3, this.configuration.isItemEnabled(), "Items", Material.FEATHER),
+                new TitleToggleButton(5, 3, this.configuration.allowItems(), "Items", Material.FEATHER),
                 new TitleToggleButtonItem("Activés", event -> this.configuration.enableItems()),
                 new TitleToggleButtonItem("Désactivés", event -> this.configuration.disableItems())
         );

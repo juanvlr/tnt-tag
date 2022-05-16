@@ -1,9 +1,15 @@
 package fr.juanvalero.tnttag.api.configuration;
 
-import fr.juanvalero.tnttag.api.game.GameTime;
+import fr.juanvalero.tnttag.api.configuration.inject.InjectConfiguration;
+import fr.juanvalero.tnttag.api.world.GameTime;
 import org.bukkit.Location;
 import org.bukkit.WeatherType;
 
+/**
+ * The configuration of the game.
+ * Values can be set using the config.yml file or the configuration gui.
+ * The configuration instance can be easily injected in any class by using the {@link InjectConfiguration} annotation.
+ */
 public interface Configuration {
 
     /**
@@ -76,7 +82,7 @@ public interface Configuration {
      *
      * @return {@code true} if items are enabled, {@code false} otherwise.
      */
-    boolean isItemEnabled();
+    boolean allowItems();
 
     /**
      * Increments the amount of items received by the player.
@@ -110,16 +116,16 @@ public interface Configuration {
     WeatherType isWeatherClear();
 
     /**
-     * Returns the time.
+     * Returns the game time.
      *
-     * @return The time
+     * @return The game time
      */
     GameTime getTime();
 
     /**
-     * Sets the time.
+     * Changes the current time.
      *
-     * @param time The time
+     * @param time The new time
      */
     void setTime(GameTime time);
 }

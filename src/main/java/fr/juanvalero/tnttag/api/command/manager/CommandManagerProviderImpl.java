@@ -8,6 +8,9 @@ import org.bukkit.plugin.Plugin;
 
 import javax.inject.Inject;
 
+/**
+ * Default {@link CommandManagerProvider} implementation.
+ */
 public class CommandManagerProviderImpl implements CommandManagerProvider {
 
     private final Plugin plugin;

@@ -23,10 +23,11 @@ public class ProjectileHitListener implements Listener {
     public void onProjectileHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
 
-        if (projectile.getShooter() instanceof Player shooter) {
+        if (projectile.getShooter() instanceof Player) {
             Block block = event.getHitBlock();
+
             if (block != null) {
-                this.itemService.getProjectile(projectile).ifPresent(projectileItem -> projectileItem.hurt(shooter, block));
+                this.itemService.getProjectile(projectile).ifPresent(projectileItem -> projectileItem.hurt(block));
             }
         }
     }

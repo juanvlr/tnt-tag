@@ -3,7 +3,7 @@ package fr.juanvalero.tnttag.api.game;
 public enum GameState {
 
     /**
-     * Waiting for players or starting.
+     * Waiting for players
      */
     WAITING,
     /**
@@ -11,15 +11,15 @@ public enum GameState {
      */
     FAST_STARTING,
     /**
-     * Game is starting.
+     * Game is starting
      */
     REGULAR_STARTING,
     /**
-     * Game has started.
+     * Game has started
      */
     IN_GAME,
     /**
-     * Game is stopping.
+     * Game is stopping
      */
-    STOPPING
+    STOPPED
 }

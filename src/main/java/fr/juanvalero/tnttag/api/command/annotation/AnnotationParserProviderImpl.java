@@ -7,6 +7,9 @@ import org.bukkit.command.CommandSender;
 
 import javax.inject.Inject;
 
+/**
+ * Default {@link AnnotationParserProvider} implementation.
+ */
 public class AnnotationParserProviderImpl implements AnnotationParserProvider {
 
     private final CommandManagerProvider commandManagerProvider;

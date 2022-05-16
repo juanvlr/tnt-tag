@@ -19,8 +19,12 @@ public class EndCommand {
 
     @CommandMethod("end")
     @CommandPermission("tnttag.command.end")
-    @CommandDescription("Stoppe la partie")
+    @CommandDescription("Stopper la partie")
     public void end(CommandSender sender) {
+        if (!this.game.hasStarted()) {
+            return;
+        }
+
         this.game.stop();
     }
 }

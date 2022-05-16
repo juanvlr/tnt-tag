@@ -9,18 +9,17 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class IcyAreaItem extends ProjectileItem {
 
     private static final int RADIUS = 2;
+
     private final Plugin plugin;
     private final WorldService worldService;
 
@@ -62,7 +61,7 @@ public class IcyAreaItem extends ProjectileItem {
     }
 
     @Override
-    public void hurt(Player player, Block block) {
+    public void hurt(Block block) {
         Location location = block.getLocation();
 
         List<Block> nearbyBlocks = this.worldService.getNearbyBlocks(location, RADIUS);
@@ -76,8 +75,10 @@ public class IcyAreaItem extends ProjectileItem {
 
             @Override
             public void run() {
-                IntStream.range(0, nearbyBlocks.size())
-                        .forEach(i -> nearbyBlocks.get(i).setType(nearbyBlockTypes.get(i)));
+                int nearbyBlocksAmount = nearbyBlocks.size();
+                for (int i = 0; i < nearbyBlocksAmount; i++) {
+                    nearbyBlocks.get(i).setType(nearbyBlockTypes.get(i));
+                }
             }
         }.runTaskLater(this.plugin, TickUtils.getTicks(5));
     }

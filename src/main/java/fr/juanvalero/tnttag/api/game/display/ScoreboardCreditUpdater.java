@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Auto scoreboard credit updater.
+ * When a player is joining or leaving the game, {@link #addPlayer(Player)} and {@link #removePlayer(Player)} methods
+ * must be called in order for him to receive credits.
+ */
 public class ScoreboardCreditUpdater {
 
     private final Plugin plugin;
@@ -25,6 +30,11 @@ public class ScoreboardCreditUpdater {
         this.scoreboards = new HashMap<>();
     }
 
+    /**
+     * Adds a player to the scoreboard.
+     *
+     * @param player The player to add
+     */
     public void addPlayer(Player player) {
         Scoreboard scoreboard = this.scoreboardService.getScoreboard(player);
 
@@ -33,7 +43,7 @@ public class ScoreboardCreditUpdater {
 
             @Override
             public void run() {
-                scoreboard.updateLine(2, GameMessages.getCreditMessage(this.ticks % 3));
+                scoreboard.updateLine(2, GameComponents.getCreditMessage(this.ticks % 3));
                 this.ticks++;
             }
         };
@@ -43,6 +53,11 @@ public class ScoreboardCreditUpdater {
         this.scoreboards.put(player.getUniqueId(), scoreboardUpdater);
     }
 
+    /**
+     * Removes a player from the scoreboard.
+     *
+     * @param player The player to remove
+     */
     public void removePlayer(Player player) {
         BukkitRunnable scoreboardUpdater = this.scoreboards.remove(player.getUniqueId());
         scoreboardUpdater.cancel();

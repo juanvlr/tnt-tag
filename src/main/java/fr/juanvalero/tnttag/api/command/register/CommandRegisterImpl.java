@@ -11,6 +11,9 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * Default {@link CommandRegister} implementation.
+ */
 public class CommandRegisterImpl implements CommandRegister {
 
     private final AnnotationParserProvider annotationParserProvider;

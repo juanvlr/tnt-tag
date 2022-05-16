@@ -3,10 +3,14 @@ package fr.juanvalero.tnttag.api.game.display;
 import fr.juanvalero.tnttag.api.game.GameConstants;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import org.bukkit.entity.Player;
 
-public class GameMessages {
+/**
+ * Game {@link Component}s list.
+ */
+public class GameComponents {
 
     private static final Component[] CREDIT_MESSAGES = new Component[]{
             Component.text("➤ Imaginé par Spik’ & Loomi’", NamedTextColor.GREEN),
@@ -78,5 +82,35 @@ public class GameMessages {
                 .append(Component.text("/"))
                 .append(Component.text(GameConstants.MINIMUM_PLAYER_COUNT))
                 .append(Component.text(")"));
+    }
+
+    public static Title getStartMessage() {
+        return Title.title(Component.text("GO !", NamedTextColor.GREEN), Component.empty());
+    }
+
+    public static Component getDisconnectionDeathMessage(Player leaver) {
+        return Component.text(leaver.getName(), NamedTextColor.GREEN)
+                .append(Component.text(" s'est déconnecté !"));
+    }
+
+    public static Title getTagMessage() {
+        return Title.title(
+                Component.text("Tu es tagé !"),
+                Component.empty()
+        );
+    }
+
+    public static Component getExplosionMessage(Player victim) {
+        return Component.text(victim.getName(), NamedTextColor.RED).append(Component.text(" a explosé !"));
+    }
+
+    public static Component getAlivePlayerAmountMessage(int amount) {
+        return Component.text(amount, NamedTextColor.GREEN)
+                .append(Component.text(" joueurs en vie"));
+    }
+
+    public static Component getWinMessage(Player winner) {
+        return Component.text(winner.getName(), NamedTextColor.GOLD, TextDecoration.BOLD)
+                .append(Component.text(" a gagné !"));
     }
 }

@@ -7,14 +7,15 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Firework;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Default {@link WorldService} implementation.
+ */
 public class WorldServiceImpl implements WorldService {
-
-    private static final long DAY_TIME = 1000L;
-    private static final long NIGHT_TIME = 13000L;
 
     @InjectConfiguration
     private Configuration configuration;
@@ -30,12 +31,12 @@ public class WorldServiceImpl implements WorldService {
 
     @Override
     public void setDay() {
-        this.getWorld().setTime(DAY_TIME);
+        this.getWorld().setTime(GameTime.DAY.getTicks());
     }
 
     @Override
     public void setNight() {
-        this.getWorld().setTime(NIGHT_TIME);
+        this.getWorld().setTime(GameTime.NIGHT.getTicks());
     }
 
     @Override
@@ -49,17 +50,27 @@ public class WorldServiceImpl implements WorldService {
     }
 
     @Override
-    public List<Block> getNearbyBlocks(Location location, int radius) {
+    public List<Block> getNearbyBlocks(Location center, int radius) {
         List<Block> blocks = new ArrayList<>();
-        for (int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
-            for (int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
-                blocks.add(location.getWorld().getBlockAt(x, location.getBlockY(), z));
+        for (int x = center.getBlockX() - radius; x <= center.getBlockX() + radius; x++) {
+            for (int z = center.getBlockZ() - radius; z <= center.getBlockZ() + radius; z++) {
+                blocks.add(center.getWorld().getBlockAt(x, center.getBlockY(), z));
             }
         }
 
         return blocks;
     }
 
+    @Override
+    public void spawnFirework(Location location) {
+        this.getWorld().spawn(location, Firework.class);
+    }
+
+    /**
+     * Returns the {@link World} in which the game is played.
+     *
+     * @return The game {@link World}
+     */
     private World getWorld() {
         return Bukkit.getWorld(this.configuration.getWorld());
     }

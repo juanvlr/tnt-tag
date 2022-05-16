@@ -2,7 +2,7 @@ package fr.juanvalero.tnttag.api.game.start;
 
 import com.google.inject.assistedinject.Assisted;
 import fr.juanvalero.tnttag.api.game.Game;
-import fr.juanvalero.tnttag.api.game.display.GameMessages;
+import fr.juanvalero.tnttag.api.game.display.GameComponents;
 import fr.juanvalero.tnttag.api.scoreboard.ScoreboardService;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -10,6 +10,9 @@ import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Task after which the game will start.
+ */
 public class AutoStartRunnable extends BukkitRunnable {
 
     private static final List<Integer> DISPLAY_AT = Arrays.asList(60, 30, 15, 10, 5, 4, 3, 2, 1);
@@ -31,6 +34,7 @@ public class AutoStartRunnable extends BukkitRunnable {
     public void run() {
         if (this.remainingTime == 0) {
             // We reached the timer, start the game
+            this.cancel();
             this.game.start();
 
             return;
@@ -42,11 +46,11 @@ public class AutoStartRunnable extends BukkitRunnable {
             player.setExp((float) this.remainingTime / (float) this.startingTime);
 
             this.scoreboardService.getScoreboard(player)
-                    .updateLine(4, GameMessages.getRemainingTimeMessage(this.remainingTime));
+                    .updateLine(4, GameComponents.getRemainingTimeMessage(this.remainingTime));
         });
 
         if (DISPLAY_AT.contains(this.remainingTime)) {
-            this.game.getPlayers().forEach(player -> player.showTitle(GameMessages.getRemainingTimeTitle(this.remainingTime)));
+            this.game.getPlayers().forEach(player -> player.showTitle(GameComponents.getRemainingTimeTitle(this.remainingTime)));
         }
 
         this.remainingTime--;

@@ -52,9 +52,11 @@ public class RepulsionItem extends Item {
 
     @Override
     protected void action(Player player) {
-        player.getLocation().getNearbyPlayers(RADIUS, p -> !p.getUniqueId().equals(player.getUniqueId())).forEach(p -> {
-            Vector playerDirection = p.getLocation().getDirection();
-            p.setVelocity(playerDirection.multiply(-1.5).setY(1));
-        });
+        // Nearby players except the player himself
+        player.getLocation().getNearbyPlayers(RADIUS, nearbyPlayer -> !nearbyPlayer.getUniqueId().equals(player.getUniqueId()))
+                .forEach(nearbyPlayer -> {
+                    Vector playerDirection = nearbyPlayer.getLocation().getDirection();
+                    nearbyPlayer.setVelocity(playerDirection.multiply(-1.5).setY(1));
+                });
     }
 }

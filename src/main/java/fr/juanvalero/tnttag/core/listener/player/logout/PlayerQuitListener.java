@@ -18,10 +18,8 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        this.game.removePlayer(event.getPlayer());
+        this.game.leave(event.getPlayer());
 
         event.quitMessage(null);
     }
-
-
 }

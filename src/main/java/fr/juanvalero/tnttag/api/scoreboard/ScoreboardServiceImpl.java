@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Default {@link ScoreboardService} implementation.
+ */
 public class ScoreboardServiceImpl implements ScoreboardService {
 
     private final ScoreboardFactory scoreboardFactory;
@@ -29,7 +32,6 @@ public class ScoreboardServiceImpl implements ScoreboardService {
 
         Scoreboard scoreboard = this.scoreboardFactory.createScoreboard(player, title);
         this.scoreboards.put(playerId, scoreboard);
-
     }
 
     @Override

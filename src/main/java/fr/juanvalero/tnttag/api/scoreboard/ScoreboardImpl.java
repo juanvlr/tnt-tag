@@ -14,6 +14,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
 
+/**
+ * Default {@link Scoreboard} implementation.
+ */
 public class ScoreboardImpl implements Scoreboard {
 
     private static final int SCOREBOARD_MINIMUM_WIDTH = 35;
@@ -60,9 +63,9 @@ public class ScoreboardImpl implements Scoreboard {
         } else {
             // Create empty lines between the last line and the new one
             IntStream.range(this.lines.lastKey() + 1, line)
-                    .forEach(l -> {
-                        String blank = " ".repeat(l); // Trick to store multiple blank lines
-                        this.lines.put(l, blank);
+                    .forEach(index -> {
+                        String blank = " ".repeat(index); // Trick to store multiple blank lines
+                        this.lines.put(index, blank);
                     });
 
             this.lines.put(line, serializedContent);

@@ -11,7 +11,8 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
+import static fr.juanvalero.tnttag.api.game.item.Item.ID_FIELD;
 
 public class ItemServiceImpl implements ItemService {
 
@@ -21,30 +22,30 @@ public class ItemServiceImpl implements ItemService {
     @Inject
     public ItemServiceImpl(Plugin plugin, Set<Item> items) {
         this.plugin = plugin;
-        this.items = items.stream()
-                .collect(Collectors.toMap(Item::getId, Function.identity()));
+
+        this.items = items.stream().collect(Collectors.toMap(Item::getId, Function.identity()));
     }
 
     @Override
     public Optional<Item> getItem(ItemStack itemStack) {
         NBTItem itemNbt = new NBTItem(itemStack);
 
-        if (!itemNbt.hasKey("id")) {
+        if (!itemNbt.hasKey(ID_FIELD)) {
             return Optional.empty();
         }
 
-        int id = itemNbt.getInteger("id");
+        int id = itemNbt.getInteger(ID_FIELD);
 
         return Optional.ofNullable(this.items.get(id));
     }
 
     @Override
     public Optional<ProjectileItem> getProjectile(Projectile projectile) {
-        if (!projectile.hasMetadata("id")) {
+        if (!projectile.hasMetadata(ID_FIELD)) {
             return Optional.empty();
         }
 
-        MetadataValue metadata = projectile.getMetadata("id").get(0);
+        MetadataValue metadata = projectile.getMetadata(ID_FIELD).get(0);
         Object value = metadata.value();
 
         if (value == null) {
@@ -62,26 +63,23 @@ public class ItemServiceImpl implements ItemService {
     public void launchProjectile(ItemStack itemStack, Projectile projectile) {
         NBTItem itemNbt = new NBTItem(itemStack);
 
-        if (!itemNbt.hasKey("id")) {
+        if (!itemNbt.hasKey(ID_FIELD)) {
             return;
         }
 
-        int id = itemNbt.getInteger("id");
+        int id = itemNbt.getInteger(ID_FIELD);
 
-        projectile.setMetadata("id", new FixedMetadataValue(this.plugin, id));
+        projectile.setMetadata(ID_FIELD, new FixedMetadataValue(this.plugin, id));
     }
 
     @Override
-    public Map<Integer, ItemStack> getRandomItems(int amount) {
-        List<Integer> itemIds = new ArrayList<>(this.items.keySet());
-        Collections.shuffle(itemIds);
+    public List<ItemStack> getRandomItems(int amount) {
+        List<Item> randomItems = new ArrayList<>(this.items.values());
+        Collections.shuffle(randomItems);
 
-        return IntStream.range(0, amount)
-                .boxed()
-                .collect(Collectors.toMap(Function.identity(), slot -> {
-                    int id = itemIds.get(slot);
-
-                    return this.items.get(id).asItemStack();
-                }));
+        return randomItems.stream()
+                .map(Item::asItemStack)
+                .collect(Collectors.toList())
+                .subList(0, amount);
     }
 }

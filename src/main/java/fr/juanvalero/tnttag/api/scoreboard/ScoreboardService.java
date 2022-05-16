@@ -3,6 +3,9 @@ package fr.juanvalero.tnttag.api.scoreboard;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+/**
+ * Scoreboard utilities.
+ */
 public interface ScoreboardService {
 
     /**

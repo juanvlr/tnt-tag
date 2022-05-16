@@ -14,13 +14,17 @@ public class TntTagPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        super.getSLF4JLogger().info("== Enabling TntTag v{} by Choukas ==", super.getDescription().getVersion());
+
         try {
             Injector injector = Guice.createInjector(PLUGIN_STAGE,
                     new APIModule(this, this.getSLF4JLogger(), this.getConfig()),
                     new CoreModule());
             injector.getInstance(Boostrap.class).bootstrap();
+
+            super.getSLF4JLogger().info("TntTag enabled successfully");
         } catch (Exception e) {
-            super.getLogger().severe(
+            super.getSLF4JLogger().error(
                     "An error occurred while enabling TntTag. Please refer to the following exception for further details."
             );
 
@@ -30,6 +34,6 @@ public class TntTagPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        super.getLogger().info("TntTag disabled successfully !");
+        super.getSLF4JLogger().info("TntTag disabled successfully !");
     }
 }
