@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.api.game;
 
 import fr.juanvalero.tnttag.api.game.player.PlayerCollection;

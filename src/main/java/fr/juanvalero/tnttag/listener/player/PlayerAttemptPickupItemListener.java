@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.listener.player;
 
 import org.bukkit.event.EventHandler;

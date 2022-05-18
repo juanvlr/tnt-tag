@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.listener.projectile;
 
 import fr.juanvalero.tnttag.api.game.item.ItemService;

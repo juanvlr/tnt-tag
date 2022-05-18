@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.api.game;
 
 import fr.juanvalero.tnttag.api.configuration.Configuration;
@@ -33,6 +37,8 @@ import java.util.Random;
 /**
  * Default {@link Game} implementation.
  */
+// TODO Check the speed of each player after getting tagged
+// TODO Check configuration gui when 2 players can access it
 @SuppressWarnings("ConstantConditions")
 public class GameImpl implements Game {
 

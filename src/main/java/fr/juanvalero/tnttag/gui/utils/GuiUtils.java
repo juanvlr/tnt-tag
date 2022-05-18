@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.gui.utils;
 
 import com.github.stefvanschie.inventoryframework.adventuresupport.ComponentHolder;

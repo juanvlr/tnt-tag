@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.gui;
 
 import com.github.stefvanschie.inventoryframework.font.util.Font;

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.api.game.item;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;

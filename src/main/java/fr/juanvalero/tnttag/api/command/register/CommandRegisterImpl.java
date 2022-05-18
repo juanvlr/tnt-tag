@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.api.command.register;
 
 import cloud.commandframework.annotations.AnnotationParser;

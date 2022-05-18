@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 - Juan Valero
+ */
+
 package fr.juanvalero.tnttag.gui.utils;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
