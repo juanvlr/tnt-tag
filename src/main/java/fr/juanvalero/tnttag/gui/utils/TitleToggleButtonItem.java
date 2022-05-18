@@ -8,7 +8,19 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.function.Consumer;
 
-public record TitleToggleButtonItem(String name, Consumer<InventoryClickEvent> action) {
+public final class TitleToggleButtonItem {
+
+    private final String name;
+    private final Consumer<InventoryClickEvent> action;
+
+    public TitleToggleButtonItem(String name, Consumer<InventoryClickEvent> action) {
+        this.name = name;
+        this.action = action;
+    }
+
+    public String getName() {
+        return this.name;
+    }
 
     public void accept(InventoryClickEvent event) {
         this.action.accept(event);

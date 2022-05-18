@@ -11,7 +11,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Contains utility methods to easily build a {@link ItemStack}.
@@ -42,7 +44,7 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder withLore(Component... lore) {
-        this.lore = List.of(lore);
+        this.lore = Arrays.asList(lore);
 
         return this;
     }
@@ -65,7 +67,7 @@ public class ItemStackBuilder {
         if (this.lore != null) {
             lore = this.lore.stream()
                     .map(EMPTY_COMPONENT::append)
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
         meta.lore(lore);

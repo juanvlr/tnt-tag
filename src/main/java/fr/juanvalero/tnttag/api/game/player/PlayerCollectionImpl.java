@@ -55,7 +55,7 @@ public class PlayerCollectionImpl implements PlayerCollection {
     public Player getFirst() {
         return this.players.values().stream()
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(RuntimeException::new);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PlayerCollectionImpl implements PlayerCollection {
 
                     return Double.compare(p1Distance, p2Distance);
                 })
-                .toList()
+                .collect(Collectors.toList())
                 .get(0);
     }
 

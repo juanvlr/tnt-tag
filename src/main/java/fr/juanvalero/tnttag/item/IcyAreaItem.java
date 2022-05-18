@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class IcyAreaItem extends ProjectileItem {
 
@@ -71,7 +72,7 @@ public class IcyAreaItem extends ProjectileItem {
         List<Block> nearbyBlocks = this.worldService.getNearbyBlocks(location, RADIUS);
         List<Material> nearbyBlockTypes = nearbyBlocks.stream()
                 .map(Block::getType)
-                .toList();
+                .collect(Collectors.toList());
 
         nearbyBlocks.forEach(nearbyBlock -> nearbyBlock.setType(Material.PACKED_ICE));
 

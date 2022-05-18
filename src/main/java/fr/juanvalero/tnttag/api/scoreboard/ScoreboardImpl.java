@@ -48,7 +48,7 @@ public class ScoreboardImpl implements Scoreboard {
 
         this.lines = new TreeMap<>();
 
-        String blank = " ".repeat(SCOREBOARD_MINIMUM_WIDTH); // Fix scoreboard width
+        String blank = StringUtils.repeat(" ", SCOREBOARD_MINIMUM_WIDTH); // Fix scoreboard width
         this.lines.put(1, blank);
         this.updateLine(1, blank);
     }
@@ -68,7 +68,7 @@ public class ScoreboardImpl implements Scoreboard {
             // Create empty lines between the last line and the new one
             IntStream.range(this.lines.lastKey() + 1, line)
                     .forEach(index -> {
-                        String blank = " ".repeat(index); // Trick to store multiple blank lines
+                        String blank = StringUtils.repeat(" ", index); // Trick to store multiple blank lines
                         this.lines.put(index, blank);
                     });
 

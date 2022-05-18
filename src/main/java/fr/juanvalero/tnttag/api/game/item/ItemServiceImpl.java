@@ -56,11 +56,13 @@ public class ItemServiceImpl implements ItemService {
             return Optional.empty();
         }
 
-        if (!(this.items.get((int) value) instanceof ProjectileItem projectileItem)) {
+        Item projectileItem = this.items.get((int) value);
+
+        if (!(projectileItem instanceof ProjectileItem)) {
             return Optional.empty();
         }
 
-        return Optional.of(projectileItem);
+        return Optional.of((ProjectileItem) projectileItem);
     }
 
     @Override

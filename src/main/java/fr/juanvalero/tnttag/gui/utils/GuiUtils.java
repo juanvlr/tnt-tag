@@ -60,7 +60,7 @@ public class GuiUtils {
             MaterialToggleButton button,
             MaterialToggleButtonItem enableItem,
             MaterialToggleButtonItem disableItem) {
-        ToggleButton toggleButton = new ToggleButton(button.x(), button.y(), 1, 1, button.defaultValue());
+        ToggleButton toggleButton = new ToggleButton(button.getX(), button.getY(), 1, 1, button.getDefaultValue());
 
         toggleButton.setOnClick(event -> {
             if (toggleButton.isEnabled()) {
@@ -78,8 +78,8 @@ public class GuiUtils {
 
     private static GuiItem createItemFromMaterialToggleButton(MaterialToggleButtonItem buttonItem) {
         return new GuiItem(
-                new ItemStackBuilder(buttonItem.material())
-                        .withName(Component.text(buttonItem.name()))
+                new ItemStackBuilder(buttonItem.getMaterial())
+                        .withName(Component.text(buttonItem.getName()))
                         .build()
         );
     }
@@ -89,7 +89,7 @@ public class GuiUtils {
             TitleToggleButtonItem enableItem,
             TitleToggleButtonItem disableItem
     ) {
-        ToggleButton toggleButton = new ToggleButton(button.x(), button.y(), 1, 1, button.defaultValue());
+        ToggleButton toggleButton = new ToggleButton(button.getX(), button.getY(), 1, 1, button.getDefaultValue());
 
         toggleButton.setOnClick(event -> {
             if (toggleButton.isEnabled()) {
@@ -107,10 +107,10 @@ public class GuiUtils {
 
     private static GuiItem createItemFromTitleToggleButton(TitleToggleButton button, TitleToggleButtonItem buttonItem, TextColor color) {
         return new GuiItem(
-                new ItemStackBuilder(button.material())
-                        .withName(Component.text(button.name())
+                new ItemStackBuilder(button.getMaterial())
+                        .withName(Component.text(button.getName())
                                 .append(Component.text(" : "))
-                                .append(Component.text(buttonItem.name(), color)))
+                                .append(Component.text(buttonItem.getName(), color)))
                         .build()
         );
     }

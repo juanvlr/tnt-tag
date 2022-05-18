@@ -5,6 +5,7 @@
 package fr.juanvalero.tnttag.listener.entity;
 
 import fr.juanvalero.tnttag.api.game.Game;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,12 +34,15 @@ public class EntityDamageListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Player defender) {
-            if (event.getDamager() instanceof Player damager) {
+        Entity defender = event.getEntity();
+        if (defender instanceof Player) {
+            Entity damager = event.getDamager();
+
+            if (damager instanceof Player) {
                 // Keep knockback without dealing damage
                 event.setDamage(0.);
 
-                this.game.tag(damager, defender);
+                this.game.tag((Player) damager, (Player) defender);
             }
         }
     }
