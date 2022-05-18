@@ -12,19 +12,19 @@ import org.bukkit.command.CommandSender;
 
 import javax.inject.Inject;
 
-public class EndCommand {
+public class EndGameCommand {
 
     private final Game game;
 
     @Inject
-    public EndCommand(Game game) {
+    public EndGameCommand(Game game) {
         this.game = game;
     }
 
-    @CommandMethod("end")
-    @CommandPermission("tnttag.command.end")
+    @CommandMethod("endgame")
+    @CommandPermission("tnttag.command.endgame")
     @CommandDescription("Stopper la partie")
-    public void end(CommandSender sender) {
+    public void endgame(CommandSender sender) {
         if (!this.game.hasStarted()) {
             return;
         }

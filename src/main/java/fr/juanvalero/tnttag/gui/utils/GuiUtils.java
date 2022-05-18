@@ -14,10 +14,10 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.component.Label;
 import com.github.stefvanschie.inventoryframework.pane.component.ToggleButton;
 import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
+import fr.juanvalero.tnttag.api.utils.item.SkullItemStackBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class GuiUtils {
@@ -46,7 +46,7 @@ public class GuiUtils {
         OutlinePane leavePane = new OutlinePane(0, 2, 1, 1);
         leavePane.addItem(
                 new GuiItem(
-                        new ItemStackBuilder(Material.OAK_DOOR)
+                        new SkullItemStackBuilder("MHF_ArrowLeft")
                                 .withName(Component.text("Retour au menu"))
                                 .build(),
                         event -> gui.show(event.getWhoClicked())

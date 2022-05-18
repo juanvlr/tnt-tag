@@ -13,7 +13,7 @@ public class CommandModule extends AbstractModule {
     protected void configure() {
         Multibinder<Object> binder = Multibinder.newSetBinder(binder(), Object.class);
 
-        binder.addBinding().to(EndCommand.class);
+        binder.addBinding().to(EndGameCommand.class);
         binder.addBinding().to(TntTagCommand.class);
     }
 }
