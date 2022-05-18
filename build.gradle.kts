@@ -63,9 +63,5 @@ spigot {
     name = project.properties["plugin.name"].toString()
     authors = listOf(project.properties["plugin.author"].toString())
     apiVersion = project.properties["plugin.apiversion"].toString()
-    libraries = listOf(
-        "com.google.inject:guice:5.1.0",
-        "com.google.inject.extensions:guice-assistedinject:5.1.0",
-        "com.google.inject.extensions:guice-throwingproviders:5.1.0"
-    )
+    excludeLibraries = listOf("*")
 }
