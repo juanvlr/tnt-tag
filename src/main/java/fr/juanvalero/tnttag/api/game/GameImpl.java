@@ -41,7 +41,6 @@ import java.util.Random;
 /**
  * Default {@link Game} implementation.
  */
-// TODO Check the speed of each player after getting tagged
 @SuppressWarnings("ConstantConditions")
 public class GameImpl implements Game {
 

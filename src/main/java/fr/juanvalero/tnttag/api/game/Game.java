@@ -117,5 +117,11 @@ public interface Game {
      */
     boolean isTagged(Player player);
 
+    /**
+     * Checks if a player is a spectator.
+     *
+     * @param player The player to check
+     * @return {@code true} if the player is a spectator, {@code false} otherwise.
+     */
     boolean isSpectator(Player player);
 }
