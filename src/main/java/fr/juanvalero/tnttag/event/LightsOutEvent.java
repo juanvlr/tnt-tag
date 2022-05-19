@@ -28,4 +28,14 @@ public class LightsOutEvent extends Event {
                 )
         );
     }
+
+    @Override
+    public String getName() {
+        return "Extinction";
+    }
+
+    @Override
+    public int getDuration() {
+        return 30;
+    }
 }

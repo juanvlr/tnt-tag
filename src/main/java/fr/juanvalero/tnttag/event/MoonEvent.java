@@ -28,4 +28,14 @@ public class MoonEvent extends Event {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, TickUtils.getTicks(30), 2));
         });
     }
+
+    @Override
+    public String getName() {
+        return "Lunaire";
+    }
+
+    @Override
+    public int getDuration() {
+        return 30;
+    }
 }

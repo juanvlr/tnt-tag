@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 public class ExplosionRunnable extends BukkitRunnable {
 
-    private static final int EXPLOSION_TIME = 60;
+    private static final int EXPLOSION_TIME = 300; // TODO Change to 60
 
     private final Game game;
     private final ScoreboardService scoreboardService;

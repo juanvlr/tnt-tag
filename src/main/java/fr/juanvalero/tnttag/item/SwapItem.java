@@ -67,26 +67,12 @@ public class SwapItem extends Item {
         targetPlayer.teleport(currentLocation);
         player.teleport(targetLocation);
 
-        if (this.game.isTagged(player)) {
-            this.updateLocation(player);
-        }
-
-        if (this.game.isTagged(targetPlayer)) {
-            this.updateLocation(targetPlayer);
-        }
-    }
-
-    private void updateLocation(Player player) {
-        Location location = player.getLocation();
-
-        this.game.getTaggedPlayers().forEach(taggedPlayer -> {
-            Location taggedPlayerLocation = taggedPlayer.getLocation();
-
-            if (taggedPlayerLocation.distance(location) < taggedPlayer.getCompassTarget().distance(location)) {
-                // The moving player became the closest player from the current tagged player
-                // Refresh his tracker
-                taggedPlayer.setCompassTarget(location);
-            }
-        });
+        this.game.getTaggedPlayers().forEach(taggedPlayer ->
+                taggedPlayer.setCompassTarget(
+                        this.game.getPlayers()
+                                .filter(p -> !this.game.isTagged(p))
+                                .getClosestLocation(taggedPlayer)
+                )
+        );
     }
 }

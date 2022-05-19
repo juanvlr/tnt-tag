@@ -28,4 +28,14 @@ public class GatheringEvent extends Event {
                 this.game.getPlayers().forEach(player -> player.teleport(startLocation))
         );
     }
+
+    @Override
+    public String getName() {
+        return "Rassemblement";
+    }
+
+    @Override
+    public int getDuration() {
+        return 0;
+    }
 }

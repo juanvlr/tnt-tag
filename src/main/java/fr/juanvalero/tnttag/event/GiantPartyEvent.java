@@ -31,4 +31,14 @@ public class GiantPartyEvent extends Event {
             this.worldService.spawnFirework(player.getLocation());
         });
     }
+
+    @Override
+    public String getName() {
+        return "Fête Géante";
+    }
+
+    @Override
+    public int getDuration() {
+        return 20;
+    }
 }

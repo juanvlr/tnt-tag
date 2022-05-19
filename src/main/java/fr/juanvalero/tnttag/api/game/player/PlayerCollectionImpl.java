@@ -20,7 +20,7 @@ public class PlayerCollectionImpl implements PlayerCollection {
         this.players = new HashMap<>();
     }
 
-    public PlayerCollectionImpl(List<Player> players) {
+    public PlayerCollectionImpl(Collection<Player> players) {
         this();
 
         players.forEach(this::add);
@@ -76,26 +76,31 @@ public class PlayerCollectionImpl implements PlayerCollection {
 
     @Override
     public void forEach(Consumer<? super Player> action) {
-        this.players.values().forEach(action);
-    }
-
-    @Override
-    public Player getClosest(Player player) {
-        Location location = player.getLocation();
-
-        return this.players.values().stream()
-                .sorted((player1, player2) -> {
-                    double p1Distance = player1.getLocation().distance(location);
-                    double p2Distance = player2.getLocation().distance(location);
-
-                    return Double.compare(p1Distance, p2Distance);
-                })
-                .collect(Collectors.toList())
-                .get(0);
+        new ArrayList<>(this.players.values()).forEach(action);
     }
 
     @Override
     public PlayerCollection filter(Predicate<? super Player> filter) {
         return new PlayerCollectionImpl(this.players.values().stream().filter(filter).collect(Collectors.toList()));
+    }
+
+    @Override
+    public Location getClosestLocation(Player player) {
+        return this.getClosestLocation(player, null);
+    }
+
+    @Override
+    public Location getClosestLocation(Player player, Location excludedPlayerLocation) {
+        Location closestLocation = excludedPlayerLocation;
+
+        for (Player p : this.players.values()) {
+            Location location = p.getLocation();
+
+            if (closestLocation == null || player.getLocation().distance(location) < player.getLocation().distance(closestLocation)) {
+                closestLocation = location;
+            }
+        }
+
+        return closestLocation;
     }
 }

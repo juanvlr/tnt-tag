@@ -4,12 +4,13 @@
 
 package fr.juanvalero.tnttag.api.game.player;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public interface PlayerCollection {
+public interface PlayerCollection extends Cloneable {
 
     /**
      * Adds a player in this collection.
@@ -80,7 +81,9 @@ public interface PlayerCollection {
      */
     void forEach(Consumer<? super Player> action);
 
-    Player getClosest(Player player);
-
     PlayerCollection filter(Predicate<? super Player> filter);
+
+    Location getClosestLocation(Player player);
+
+    Location getClosestLocation(Player player, Location excludedPlayerLocation);
 }

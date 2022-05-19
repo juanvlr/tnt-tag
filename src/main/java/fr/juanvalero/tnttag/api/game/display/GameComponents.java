@@ -99,7 +99,7 @@ public class GameComponents {
 
     public static Title getTagMessage() {
         return Title.title(
-                Component.text("Tu es tagé !"),
+                Component.text("Tu es tagé !", NamedTextColor.RED),
                 Component.empty()
         );
     }

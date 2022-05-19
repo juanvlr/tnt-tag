@@ -28,4 +28,14 @@ public class DrunkennessEvent extends Event {
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, TickUtils.getTicks(10), 2));
         });
     }
+
+    @Override
+    public String getName() {
+        return "Ivresse";
+    }
+
+    @Override
+    public int getDuration() {
+        return 10;
+    }
 }

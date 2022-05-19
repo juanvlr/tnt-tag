@@ -26,7 +26,7 @@ public interface Configuration {
     /**
      * Returns the location of the lobby.
      *
-     * @return The location of the lobby, if present
+     * @return The location of the lobby
      */
     Optional<Location> getLobbyLocation();
 

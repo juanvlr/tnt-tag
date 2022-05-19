@@ -14,4 +14,8 @@ public abstract class Event {
      * Runs the event.
      */
     public abstract void run();
+
+    public abstract String getName();
+
+    public abstract int getDuration();
 }

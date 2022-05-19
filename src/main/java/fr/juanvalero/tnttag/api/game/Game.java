@@ -116,4 +116,6 @@ public interface Game {
      * @return {@code true} if the player is tagged, {@code false} otherwise.
      */
     boolean isTagged(Player player);
+
+    boolean isSpectator(Player player);
 }

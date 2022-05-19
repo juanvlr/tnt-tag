@@ -7,6 +7,7 @@ package fr.juanvalero.tnttag.api.game;
 import fr.juanvalero.tnttag.api.configuration.Configuration;
 import fr.juanvalero.tnttag.api.game.display.GameComponents;
 import fr.juanvalero.tnttag.api.game.display.ScoreboardCreditUpdater;
+import fr.juanvalero.tnttag.api.game.event.Event;
 import fr.juanvalero.tnttag.api.game.event.EventService;
 import fr.juanvalero.tnttag.api.game.explosion.ExplosionRunnableFactory;
 import fr.juanvalero.tnttag.api.game.item.ItemService;
@@ -18,6 +19,7 @@ import fr.juanvalero.tnttag.api.scoreboard.ScoreboardService;
 import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
 import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -38,7 +40,6 @@ import java.util.Random;
  * Default {@link Game} implementation.
  */
 // TODO Check the speed of each player after getting tagged
-// TODO Check configuration gui when 2 players can access it
 @SuppressWarnings("ConstantConditions")
 public class GameImpl implements Game {
 
@@ -82,9 +83,9 @@ public class GameImpl implements Game {
     public void start() {
         if (this.configuration.allowItems()) {
             int itemAmount = this.configuration.getItemAmount();
-            List<ItemStack> items = this.itemService.getRandomItems(itemAmount);
-
             this.players.forEach(player -> {
+                List<ItemStack> items = this.itemService.getRandomItems(itemAmount);
+
                 Inventory inventory = player.getInventory();
 
                 for (int slot = 0; slot < itemAmount; slot++) {
@@ -100,6 +101,8 @@ public class GameImpl implements Game {
             scoreboard.updateLine(4, GameComponents.getAlivePlayerAmountMessage(this.players.count()));
 
             player.showTitle(GameComponents.getStartMessage());
+
+            player.sendMessage(Component.text("La partie commence.. Fuyez pauvre fou !"));
 
             this.configuration.getStartLocation().ifPresent(player::teleport);
         });
@@ -264,6 +267,11 @@ public class GameImpl implements Game {
         return this.taggedPlayers.contains(player);
     }
 
+    @Override
+    public boolean isSpectator(Player player) {
+        return !this.players.contains(player);
+    }
+
     /**
      * Checks if the game is regularly starting.
      *
@@ -326,7 +334,19 @@ public class GameImpl implements Game {
 
         if (this.configuration.isEventEnabled()) {
             if (new Random().nextInt(2) == 0) {
-                this.eventService.getRandomEvent().run();
+                Event event = this.eventService.getRandomEvent();
+                event.run();
+
+                this.players.forEach(player -> player.showTitle(
+                                Title.title(
+                                        Component.text(event.getName()),
+                                        event.getDuration() > 0
+                                                ? (Component.text(event.getDuration()).append(Component.text(" secondes")))
+                                                : (Component.text("Instantanée")
+                                        )
+                                )
+                        )
+                );
             }
         }
     }
@@ -353,7 +373,11 @@ public class GameImpl implements Game {
         if (this.players.count() == 1) {
             // Last player, we've found the winner !
             Player winner = this.players.getFirst();
-            Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(GameComponents.getWinMessage(winner)));
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                player.sendMessage(GameComponents.getWinMessage(winner));
+                this.configuration.getLobbyLocation().ifPresent(location -> player.teleport(location));
+                player.getInventory().clear();
+            });
 
             this.stop();
 
@@ -384,8 +408,7 @@ public class GameImpl implements Game {
         taggedPlayer.setCompassTarget(
                 this.getPlayers()
                         .filter(player -> !this.isTagged(player))
-                        .getClosest(taggedPlayer)
-                        .getLocation()
+                        .getClosestLocation(taggedPlayer)
         );
 
         taggedPlayer.showTitle(GameComponents.getTagMessage());
