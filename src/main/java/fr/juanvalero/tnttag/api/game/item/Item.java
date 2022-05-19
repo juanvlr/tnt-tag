@@ -6,6 +6,7 @@ package fr.juanvalero.tnttag.api.game.item;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +29,7 @@ public abstract class Item {
 
     protected final Plugin plugin;
 
-    protected final Map<UUID, Player> currentUsers;
+    protected final Map<UUID, Integer> currentUsers;
 
     public Item(Plugin plugin) {
         this.plugin = plugin;
@@ -100,21 +101,34 @@ public abstract class Item {
 
         if (this.currentUsers.containsKey(playerId)) {
             // The cooldown for this player is not over yet
+            player.sendMessage(
+                    Component.text("Utilisable dans ")
+                            .append(Component.text(this.currentUsers.get(playerId)))
+                            .append(Component.text(" secondes"))
+            );
+
             return;
         }
 
-        inventory.setItem(slot, null);
-
-        this.currentUsers.put(playerId, player);
+        this.currentUsers.put(playerId, this.getCooldown());
 
         new BukkitRunnable() {
 
+            private int timer = Item.this.getCooldown();
+
             @Override
             public void run() {
-                Item.this.currentUsers.remove(playerId);
-                inventory.setItem(slot, Item.this.asItemStack());
+                if (this.timer == 0) {
+                    Item.this.currentUsers.remove(playerId);
+                    this.cancel();
+
+                    return;
+                }
+
+                this.timer--;
+                Item.this.currentUsers.put(playerId, this.timer);
             }
-        }.runTaskLater(this.plugin, TickUtils.getTicks(this.getCooldown()));
+        }.runTaskTimer(this.plugin, 0, TickUtils.TICKS_PER_SECOND);
 
         this.action(player);
     }

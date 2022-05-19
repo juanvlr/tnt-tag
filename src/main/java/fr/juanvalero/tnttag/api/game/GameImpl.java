@@ -29,6 +29,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -98,13 +99,17 @@ public class GameImpl implements Game {
 
         this.players.forEach(player -> {
             Scoreboard scoreboard = this.scoreboardService.getScoreboard(player);
-            scoreboard.updateLine(4, GameComponents.getAlivePlayerAmountMessage(this.players.count()));
+            scoreboard.empty();
+
+            scoreboard.updateLine(2, GameComponents.getAlivePlayerAmountMessage(this.players.count()));
 
             player.showTitle(GameComponents.getStartMessage());
 
             player.sendMessage(Component.text("La partie commence.. Fuyez pauvre fou !"));
 
             this.configuration.getStartLocation().ifPresent(player::teleport);
+
+            this.scoreboardCreditUpdater.removePlayer(player);
         });
 
         this.state = GameState.IN_GAME;
@@ -140,7 +145,7 @@ public class GameImpl implements Game {
     public void stop() {
         this.explosionRunnable.cancel();
 
-        Bukkit.getOnlinePlayers().forEach(player -> this.scoreboardService.getScoreboard(player).eraseLines(3, 4, 5, 6));
+        Bukkit.getOnlinePlayers().forEach(this.scoreboardService::deleteScoreboard);
 
         this.state = GameState.STOPPED;
     }
@@ -164,8 +169,11 @@ public class GameImpl implements Game {
 
         this.taggedPlayers.remove(damager);
 
-        damager.getInventory().setHelmet(null);
-        damager.getInventory().setItem(8, null);
+        PlayerInventory damagerInventory = damager.getInventory();
+
+        damagerInventory.setHelmet(null);
+        damagerInventory.setItem(8, null);
+        damagerInventory.setItem(7, null);
 
         AttributeInstance damagerSpeedAttribute = damager.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
         damagerSpeedAttribute.setBaseValue(damagerSpeedAttribute.getBaseValue()); // Resets his speed
@@ -246,10 +254,15 @@ public class GameImpl implements Game {
                     this.state = GameState.WAITING;
                 }
             }
+
+            if (this.state == GameState.WAITING || this.isFastStarting()) {
+                this.scoreboardCreditUpdater.removePlayer(leaver);
+            }
         }
 
-        this.scoreboardService.deleteScoreboard(leaver);
-        this.scoreboardCreditUpdater.removePlayer(leaver);
+        if (this.state != GameState.STOPPED) {
+            this.scoreboardService.deleteScoreboard(leaver);
+        }
     }
 
     @Override
@@ -362,9 +375,9 @@ public class GameImpl implements Game {
         this.clean(victim);
 
         Bukkit.getOnlinePlayers().forEach(player -> {
-                    player.sendMessage(reason);
-                    this.scoreboardService.getScoreboard(player)
-                            .updateLine(4, GameComponents.getAlivePlayerAmountMessage(this.players.count()));
+            player.sendMessage(reason);
+            this.scoreboardService.getScoreboard(player)
+                    .updateLine(2, GameComponents.getAlivePlayerAmountMessage(this.players.count()));
                 }
         );
 
@@ -394,23 +407,29 @@ public class GameImpl implements Game {
         }
     }
 
-    private void tagPlayer(Player taggedPlayer) {
-        taggedPlayer.getInventory().setHelmet(new ItemStack(Material.TNT));
-        taggedPlayer.getInventory().setItem(8,
+    private void tagPlayer(Player player) {
+        PlayerInventory inventory = player.getInventory();
+
+        inventory.setHelmet(new ItemStack(Material.TNT));
+        inventory.setItem(8,
                 new ItemStackBuilder(Material.COMPASS)
                         .withName(Component.text("Tracker"))
                         .build()
         );
-
-        AttributeInstance defenderSpeedAttribute = taggedPlayer.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-        defenderSpeedAttribute.setBaseValue(defenderSpeedAttribute.getBaseValue() * 1.05); // Small speed boost
-
-        taggedPlayer.setCompassTarget(
-                this.getPlayers()
-                        .filter(player -> !this.isTagged(player))
-                        .getClosestLocation(taggedPlayer)
+        inventory.setItem(7,
+                new ItemStackBuilder(Material.TNT)
+                        .build()
         );
 
-        taggedPlayer.showTitle(GameComponents.getTagMessage());
+        AttributeInstance defenderSpeedAttribute = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+        defenderSpeedAttribute.setBaseValue(defenderSpeedAttribute.getBaseValue() * 1.05); // Small speed boost
+
+        player.setCompassTarget(
+                this.getPlayers()
+                        .filter(p -> !this.isTagged(p))
+                        .getClosestLocation(player)
+        );
+
+        player.showTitle(GameComponents.getTagMessage());
     }
 }

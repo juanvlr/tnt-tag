@@ -6,6 +6,7 @@ package fr.juanvalero.tnttag.api.scoreboard;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -17,11 +18,13 @@ import java.util.UUID;
  */
 public class ScoreboardServiceImpl implements ScoreboardService {
 
+    private final ScoreboardManager scoreboardManager;
     private final ScoreboardFactory scoreboardFactory;
     private final Map<UUID, Scoreboard> scoreboards;
 
     @Inject
-    public ScoreboardServiceImpl(ScoreboardFactory scoreboardFactory) {
+    public ScoreboardServiceImpl(ScoreboardManager scoreboardManager, ScoreboardFactory scoreboardFactory) {
+        this.scoreboardManager = scoreboardManager;
         this.scoreboardFactory = scoreboardFactory;
         this.scoreboards = new HashMap<>();
     }
@@ -47,6 +50,8 @@ public class ScoreboardServiceImpl implements ScoreboardService {
         }
 
         this.scoreboards.remove(playerId);
+
+        player.setScoreboard(this.scoreboardManager.getNewScoreboard());
     }
 
     @Override

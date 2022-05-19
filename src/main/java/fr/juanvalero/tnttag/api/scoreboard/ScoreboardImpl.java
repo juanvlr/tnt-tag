@@ -88,6 +88,11 @@ public class ScoreboardImpl implements Scoreboard {
         this.refreshLinesNumber();
     }
 
+    @Override
+    public void empty() {
+        this.eraseLines(IntStream.range(2, this.lines.size() + 1).toArray());
+    }
+
     private void updateLine(int line, String content) {
         this.objective.getScore(content).setScore(this.lines.size() - line);
     }

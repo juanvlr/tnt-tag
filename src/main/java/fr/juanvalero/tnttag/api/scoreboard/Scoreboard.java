@@ -22,4 +22,9 @@ public interface Scoreboard {
      * @param lines The lines number to be erased.
      */
     void eraseLines(int... lines);
+
+    /**
+     * Empty the scoreboard.
+     */
+    void empty();
 }

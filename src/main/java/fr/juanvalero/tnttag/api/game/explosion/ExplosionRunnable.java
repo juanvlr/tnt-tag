@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 public class ExplosionRunnable extends BukkitRunnable {
 
-    private static final int EXPLOSION_TIME = 300; // TODO Change to 60
+    private static final int EXPLOSION_TIME = 60;
 
     private final Game game;
     private final ScoreboardService scoreboardService;
@@ -40,12 +40,12 @@ public class ExplosionRunnable extends BukkitRunnable {
         }
 
         this.game.getPlayers().forEach(player -> {
-                    this.scoreboardService.getScoreboard(player).updateLine(6,
-                            Component
-                                    .text("Explosion dans ")
-                                    .append(Component.text(this.time).color(NamedTextColor.GREEN))
-                                    .append(Component.text(" seconde(s)"))
-                    );
+            this.scoreboardService.getScoreboard(player).updateLine(4,
+                    Component
+                            .text("Explosion dans ")
+                            .append(Component.text(this.time).color(NamedTextColor.GREEN))
+                            .append(Component.text(" seconde(s)"))
+            );
 
                     player.setLevel(this.time);
                     player.setExp((float) this.time / (float) EXPLOSION_TIME);
