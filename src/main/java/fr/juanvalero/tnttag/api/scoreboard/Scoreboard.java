@@ -17,13 +17,6 @@ public interface Scoreboard {
     void updateLine(int line, Component content);
 
     /**
-     * Erases the specified lines.
-     *
-     * @param lines The lines number to be erased.
-     */
-    void eraseLines(int... lines);
-
-    /**
      * Empty the scoreboard.
      */
     void empty();

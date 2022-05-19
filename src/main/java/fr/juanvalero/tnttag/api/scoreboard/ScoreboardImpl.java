@@ -79,18 +79,22 @@ public class ScoreboardImpl implements Scoreboard {
     }
 
     @Override
-    public void eraseLines(int... lines) {
+    public void empty() {
+        this.eraseLines(IntStream.range(2, this.lines.size() + 1).toArray());
+    }
+
+    /**
+     * Erases the specified lines.
+     *
+     * @param lines The lines number to be erased.
+     */
+    private void eraseLines(int... lines) {
         for (int line : lines) {
             String content = this.lines.remove(line);
             this.scoreboard.resetScores(content);
         }
 
         this.refreshLinesNumber();
-    }
-
-    @Override
-    public void empty() {
-        this.eraseLines(IntStream.range(2, this.lines.size() + 1).toArray());
     }
 
     private void updateLine(int line, String content) {

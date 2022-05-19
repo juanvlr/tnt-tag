@@ -388,6 +388,7 @@ public class GameImpl implements Game {
             Player winner = this.players.getFirst();
             Bukkit.getOnlinePlayers().forEach(player -> {
                 player.sendMessage(GameComponents.getWinMessage(winner));
+                //noinspection Convert2MethodRef - Lambda expressions seems to be bugged here
                 this.configuration.getLobbyLocation().ifPresent(location -> player.teleport(location));
                 player.getInventory().clear();
             });
