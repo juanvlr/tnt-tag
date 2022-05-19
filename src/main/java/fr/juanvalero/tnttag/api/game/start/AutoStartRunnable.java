@@ -8,6 +8,7 @@ import com.google.inject.assistedinject.Assisted;
 import fr.juanvalero.tnttag.api.game.Game;
 import fr.juanvalero.tnttag.api.game.display.GameComponents;
 import fr.juanvalero.tnttag.api.scoreboard.ScoreboardService;
+import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
@@ -54,7 +55,10 @@ public class AutoStartRunnable extends BukkitRunnable {
         });
 
         if (DISPLAY_AT.contains(this.remainingTime)) {
-            this.game.getPlayers().forEach(player -> player.showTitle(GameComponents.getRemainingTimeTitle(this.remainingTime)));
+            this.game.getPlayers().forEach(player -> {
+                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+                player.showTitle(GameComponents.getRemainingTimeTitle(this.remainingTime));
+            });
         }
 
         this.remainingTime--;

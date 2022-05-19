@@ -23,6 +23,7 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
@@ -409,6 +410,8 @@ public class GameImpl implements Game {
     }
 
     private void tagPlayer(Player player) {
+        player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f);
+
         PlayerInventory inventory = player.getInventory();
 
         inventory.setHelmet(new ItemStack(Material.TNT));

@@ -7,6 +7,7 @@ package fr.juanvalero.tnttag.api.game.item;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -110,6 +111,8 @@ public abstract class Item {
             return;
         }
 
+        player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f);
+
         this.currentUsers.put(playerId, this.getCooldown());
 
         new BukkitRunnable() {
@@ -121,6 +124,8 @@ public abstract class Item {
                 if (this.timer == 0) {
                     Item.this.currentUsers.remove(playerId);
                     this.cancel();
+
+                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
 
                     return;
                 }
