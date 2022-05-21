@@ -23,7 +23,7 @@ public class DrunkennessEvent extends Event {
 
     @Override
     public void run() {
-        this.game.getPlayers().forEach(player -> {
+        this.game.getAlivePlayers().forEach(player -> {
             player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, TickUtils.getTicks(10), 1));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, TickUtils.getTicks(10), 2));
         });

@@ -96,18 +96,18 @@ public interface Game {
     void leave(Player player);
 
     /**
-     * Returns a collection of the players.
-     *
-     * @return A collection of the players
-     */
-    PlayerCollection getPlayers();
-
-    /**
      * Returns a collection of the tagged players.
      *
      * @return A collection of the tagged players
      */
     PlayerCollection getTaggedPlayers();
+
+    /**
+     * Returns a collection of the players alive.
+     *
+     * @return A collection of the players alive
+     */
+    PlayerCollection getAlivePlayers();
 
     /**
      * Checks if a player is tagged.

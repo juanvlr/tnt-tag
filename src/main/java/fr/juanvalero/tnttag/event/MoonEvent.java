@@ -23,7 +23,7 @@ public class MoonEvent extends Event {
 
     @Override
     public void run() {
-        this.game.getPlayers().forEach(player -> {
+        this.game.getAlivePlayers().forEach(player -> {
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, TickUtils.getTicks(30), 3));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, TickUtils.getTicks(30), 2));
         });

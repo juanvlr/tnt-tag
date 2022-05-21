@@ -23,7 +23,7 @@ public class LightsOutEvent extends Event {
 
     @Override
     public void run() {
-        this.game.getPlayers().forEach(player -> player.addPotionEffect(
+        this.game.getAlivePlayers().forEach(player -> player.addPotionEffect(
                         new PotionEffect(PotionEffectType.BLINDNESS, TickUtils.getTicks(30), 1)
                 )
         );

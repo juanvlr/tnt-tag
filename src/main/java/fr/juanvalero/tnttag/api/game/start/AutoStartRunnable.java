@@ -45,7 +45,7 @@ public class AutoStartRunnable extends BukkitRunnable {
             return;
         }
 
-        this.game.getPlayers().forEach(player -> {
+        this.game.getAlivePlayers().forEach(player -> {
             // Update the remaining time in the level bar and on the scoreboard
             player.setLevel(this.remainingTime);
             player.setExp((float) this.remainingTime / (float) this.startingTime);
@@ -55,7 +55,7 @@ public class AutoStartRunnable extends BukkitRunnable {
         });
 
         if (DISPLAY_AT.contains(this.remainingTime)) {
-            this.game.getPlayers().forEach(player -> {
+            this.game.getAlivePlayers().forEach(player -> {
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
                 player.showTitle(GameComponents.getRemainingTimeTitle(this.remainingTime));
             });
@@ -68,7 +68,7 @@ public class AutoStartRunnable extends BukkitRunnable {
     public synchronized void cancel() throws IllegalStateException {
         super.cancel();
 
-        this.game.getPlayers().forEach(player -> {
+        this.game.getAlivePlayers().forEach(player -> {
             player.setLevel(0);
             player.setExp(0.f);
         });

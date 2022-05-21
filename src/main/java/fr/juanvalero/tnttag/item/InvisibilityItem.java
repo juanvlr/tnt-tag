@@ -4,14 +4,14 @@
 
 package fr.juanvalero.tnttag.item;
 
+import fr.juanvalero.tnttag.api.game.Game;
 import fr.juanvalero.tnttag.api.game.item.Item;
-import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
 import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -21,8 +21,8 @@ import javax.inject.Inject;
 public class InvisibilityItem extends Item {
 
     @Inject
-    public InvisibilityItem(Plugin plugin) {
-        super(plugin);
+    public InvisibilityItem(Game game, Plugin plugin) {
+        super(game, plugin);
     }
 
     @Override
@@ -31,27 +31,27 @@ public class InvisibilityItem extends Item {
     }
 
     @Override
-    protected int getCooldown() {
-        return 30;
+    protected Material getMaterial() {
+        return Material.GREEN_DYE;
     }
 
     @Override
-    protected ItemStack getItemStack() {
-        return new ItemStackBuilder(Material.GRAY_DYE)
-                .withName(
-                        Component
-                                .text("[", NamedTextColor.WHITE)
-                                .append(Component.text("Invisibilité", NamedTextColor.RED))
-                                .append(Component.text("]", NamedTextColor.WHITE))
-                )
-                .withLore(
-                        Component
-                                .text("[", NamedTextColor.WHITE)
-                                .append(Component.keybind("key.use", NamedTextColor.RED))
-                                .append(Component.text("]", NamedTextColor.WHITE))
-                                .append(Component.text(" pour devenir invisible"))
-                )
-                .build();
+    protected String getName() {
+        return "Invisibilité";
+    }
+
+    @Override
+    protected Component[] getLore() {
+        return new TextComponent[]{Component
+                .text("[", NamedTextColor.WHITE)
+                .append(Component.keybind("key.use", NamedTextColor.RED))
+                .append(Component.text("]", NamedTextColor.WHITE))
+                .append(Component.text(" pour devenir invisible"))};
+    }
+
+    @Override
+    protected int getCooldown() {
+        return 30;
     }
 
     @Override

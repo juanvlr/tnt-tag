@@ -9,6 +9,7 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.CommandPermission;
 import fr.juanvalero.tnttag.api.game.Game;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import javax.inject.Inject;
@@ -30,7 +31,7 @@ public class EndGameCommand {
             return;
         }
 
-        this.game.getPlayers().forEach(player -> player.sendMessage(Component.text("La partie a était terminée par un Admin")));
+        Bukkit.broadcast(Component.text("La partie a était terminée par un Admin"));
 
         this.game.stop();
     }

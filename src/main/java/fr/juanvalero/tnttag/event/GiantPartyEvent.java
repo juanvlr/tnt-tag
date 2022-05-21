@@ -26,7 +26,7 @@ public class GiantPartyEvent extends Event {
 
     @Override
     public void run() {
-        this.game.getPlayers().forEach(player -> {
+        this.game.getAlivePlayers().forEach(player -> {
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, TickUtils.getTicks(20), 1));
             this.worldService.spawnFirework(player.getLocation());
         });

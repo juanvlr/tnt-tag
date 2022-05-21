@@ -5,11 +5,14 @@
 package fr.juanvalero.tnttag.api.game.item;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import fr.juanvalero.tnttag.api.game.Game;
+import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
 import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,11 +31,13 @@ public abstract class Item {
 
     public static final String ID_FIELD = "id";
 
-    protected final Plugin plugin;
+    protected final Game game;
+    private final Plugin plugin;
 
     protected final Map<UUID, Integer> currentUsers;
 
-    public Item(Plugin plugin) {
+    public Item(Game game, Plugin plugin) {
+        this.game = game;
         this.plugin = plugin;
         this.currentUsers = new HashMap<>();
     }
@@ -45,18 +50,32 @@ public abstract class Item {
     public abstract int getId();
 
     /**
+     * Returns the material of the item.
+     *
+     * @return The item material
+     */
+    protected abstract Material getMaterial();
+
+    /**
+     * Returns the name of the item.
+     *
+     * @return The item name
+     */
+    protected abstract String getName();
+
+    /**
+     * Returns the lore of the item.
+     *
+     * @return The item lore
+     */
+    protected abstract Component[] getLore();
+
+    /**
      * Returns the time before which the item can be reused.
      *
      * @return The item cooldown
      */
     protected abstract int getCooldown();
-
-    /**
-     * Returns the {@link ItemStack} associated to the item.
-     *
-     * @return The corresponding item {@link ItemStack}
-     */
-    protected abstract ItemStack getItemStack();
 
     /**
      * The action to execute when clicking the item.
@@ -69,9 +88,10 @@ public abstract class Item {
      * Determines if the item should be used when clicking on it.
      * Sets it to {@code true} prevents the click event from being cancelled.
      *
+     * @param player The player who clicked
      * @return {@code true} if the item should be used, {@code false} otherwise
      */
-    public boolean isUsed() {
+    public boolean consume(Player player) {
         return false;
     }
 
@@ -81,7 +101,15 @@ public abstract class Item {
      * @return The resulting {@link ItemStack}
      */
     public ItemStack asItemStack() {
-        ItemStack itemStack = this.getItemStack();
+        ItemStack itemStack = new ItemStackBuilder(this.getMaterial())
+                .withName(
+                        Component
+                                .text("[", NamedTextColor.WHITE)
+                                .append(Component.text(this.getName(), NamedTextColor.RED))
+                                .append(Component.text("]", NamedTextColor.WHITE))
+                )
+                .withLore(this.getLore())
+                .build();
 
         NBTItem nbtItem = new NBTItem(itemStack);
         nbtItem.setInteger(ID_FIELD, this.getId());
@@ -93,17 +121,18 @@ public abstract class Item {
     /**
      * Performs a click on the item.
      *
-     * @param player    The player who clicked
-     * @param inventory The inventory in which the item is located
-     * @param slot      The inventory index in which the item is located
+     * @param player         The player who clicked
+     * @param isSoundEnabled Determines if a sound is played
      */
-    public void click(Player player, Inventory inventory, int slot) {
+    public void click(Player player, boolean isSoundEnabled) {
         UUID playerId = player.getUniqueId();
 
         if (this.currentUsers.containsKey(playerId)) {
             // The cooldown for this player is not over yet
             player.sendMessage(
-                    Component.text("Utilisable dans ")
+                    Component.text("Vous récupérez votre ", NamedTextColor.RED)
+                            .append(Component.text(this.getName()))
+                            .append(Component.text(" dans "))
                             .append(Component.text(this.currentUsers.get(playerId)))
                             .append(Component.text(" secondes"))
             );
@@ -111,7 +140,9 @@ public abstract class Item {
             return;
         }
 
-        player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f);
+        if (isSoundEnabled) {
+            player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f);
+        }
 
         this.currentUsers.put(playerId, this.getCooldown());
 
@@ -125,7 +156,15 @@ public abstract class Item {
                     Item.this.currentUsers.remove(playerId);
                     this.cancel();
 
-                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+                    if (Item.this.game.hasStarted() && !Item.this.game.isSpectator(player)) {
+                        player.sendMessage(
+                                Component.text("Votre item ", NamedTextColor.GREEN)
+                                        .append(Component.text(Item.this.getName()))
+                                        .append(Component.text(" est de nouveau disponible"))
+                        );
+
+                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+                    }
 
                     return;
                 }

@@ -4,13 +4,13 @@
 
 package fr.juanvalero.tnttag.item;
 
+import fr.juanvalero.tnttag.api.game.Game;
 import fr.juanvalero.tnttag.api.game.item.Item;
-import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
@@ -19,8 +19,8 @@ import javax.inject.Inject;
 public class DashItem extends Item {
 
     @Inject
-    public DashItem(Plugin plugin) {
-        super(plugin);
+    public DashItem(Game game, Plugin plugin) {
+        super(game, plugin);
     }
 
     @Override
@@ -29,27 +29,27 @@ public class DashItem extends Item {
     }
 
     @Override
-    protected int getCooldown() {
-        return 20;
+    protected Material getMaterial() {
+        return Material.FEATHER;
     }
 
     @Override
-    protected ItemStack getItemStack() {
-        return new ItemStackBuilder(Material.FEATHER)
-                .withName(
-                        Component
-                                .text("[", NamedTextColor.WHITE)
-                                .append(Component.text("Dash", NamedTextColor.RED))
-                                .append(Component.text("]", NamedTextColor.WHITE))
-                )
-                .withLore(
-                        Component
-                                .text("[", NamedTextColor.WHITE)
-                                .append(Component.keybind("key.use", NamedTextColor.RED))
-                                .append(Component.text("]", NamedTextColor.WHITE))
-                                .append(Component.text(" pour se propulser en avant"))
-                )
-                .build();
+    protected String getName() {
+        return "Dash";
+    }
+
+    @Override
+    protected Component[] getLore() {
+        return new TextComponent[]{Component
+                .text("[", NamedTextColor.WHITE)
+                .append(Component.keybind("key.use", NamedTextColor.RED))
+                .append(Component.text("]", NamedTextColor.WHITE))
+                .append(Component.text(" pour se propulser en avant"))};
+    }
+
+    @Override
+    protected int getCooldown() {
+        return 20;
     }
 
     @Override

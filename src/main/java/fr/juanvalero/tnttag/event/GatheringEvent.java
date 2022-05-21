@@ -25,7 +25,7 @@ public class GatheringEvent extends Event {
     @Override
     public void run() {
         this.configuration.getStartLocation().ifPresent(startLocation ->
-                this.game.getPlayers().forEach(player -> player.teleport(startLocation))
+                this.game.getAlivePlayers().forEach(player -> player.teleport(startLocation))
         );
     }
 

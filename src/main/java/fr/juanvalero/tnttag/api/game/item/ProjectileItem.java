@@ -4,14 +4,10 @@
 
 package fr.juanvalero.tnttag.api.game.item;
 
-import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
+import fr.juanvalero.tnttag.api.game.Game;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.UUID;
 
 /**
  * An {@link Item} that can be thrown by the player.
@@ -19,8 +15,8 @@ import java.util.UUID;
  */
 public abstract class ProjectileItem extends Item {
 
-    public ProjectileItem(Plugin plugin) {
-        super(plugin);
+    public ProjectileItem(Game game, Plugin plugin) {
+        super(game, plugin);
     }
 
     /**
@@ -31,29 +27,13 @@ public abstract class ProjectileItem extends Item {
     public abstract void hurt(Block block);
 
     @Override
-    public boolean isUsed() {
-        return true; // Prevents the interact event from being cancelled
+    public boolean consume(Player player) {
+        return !this.currentUsers.containsKey(player.getUniqueId()); // Prevents the interact event from being cancelled (only if the cooldown is finished)
     }
 
     @Override
-    public void click(Player player, Inventory inventory, int slot) {
-        UUID playerId = player.getUniqueId();
-
-        if (this.currentUsers.containsKey(playerId)) {
-            // The cooldown for this player is not over yet
-            return;
-        }
-
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                ProjectileItem.super.currentUsers.remove(playerId);
-                inventory.setItem(slot, ProjectileItem.super.asItemStack());
-            }
-        }.runTaskLater(this.plugin, TickUtils.getTicks(this.getCooldown()));
-
-        this.action(player);
+    public void click(Player player, boolean isSoundEnabled) {
+        super.click(player, false);
     }
 
     @Override

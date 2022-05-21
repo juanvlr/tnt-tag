@@ -24,6 +24,7 @@ import fr.juanvalero.tnttag.gui.utils.MaterialToggleButtonItem;
 import fr.juanvalero.tnttag.gui.utils.TitleToggleButton;
 import fr.juanvalero.tnttag.gui.utils.TitleToggleButtonItem;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.inventory.ItemStack;
@@ -202,7 +203,10 @@ public class GameConfigurationGui {
                         .withName(Component.text("Commencer la partie"))
                         .build(),
                 event -> {
-                    if (this.game.getPlayers().count() == 1) {
+                    if (this.game.getAlivePlayers().count() == 1) {
+                        event.getWhoClicked().sendMessage(Component.text("Il faut au moins 2 joueurs pour lancer la partie", NamedTextColor.RED));
+                        //noinspection ConstantConditions
+                        event.getClickedInventory().close();
                         return;
                     }
 

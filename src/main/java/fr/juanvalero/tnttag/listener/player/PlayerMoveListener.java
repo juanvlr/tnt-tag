@@ -38,7 +38,7 @@ public class PlayerMoveListener implements Listener {
 
         this.game.getTaggedPlayers().forEach(taggedPlayer ->
                 taggedPlayer.setCompassTarget(
-                        this.game.getPlayers()
+                        this.game.getAlivePlayers()
                                 .filter(p -> !this.game.isTagged(p) && !p.equals(player))
                                 .getClosestLocation(taggedPlayer, location)
                 )

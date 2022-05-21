@@ -46,7 +46,7 @@ public class ScoreboardServiceImpl implements ScoreboardService {
         UUID playerId = player.getUniqueId();
 
         if (!this.scoreboards.containsKey(playerId)) {
-            throw new IllegalStateException(String.format("No player with id %s has a scoreboard", playerId));
+            return;
         }
 
         this.scoreboards.remove(playerId);

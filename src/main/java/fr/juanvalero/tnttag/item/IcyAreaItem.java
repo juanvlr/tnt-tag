@@ -4,16 +4,16 @@
 
 package fr.juanvalero.tnttag.item;
 
+import fr.juanvalero.tnttag.api.game.Game;
 import fr.juanvalero.tnttag.api.game.item.ProjectileItem;
-import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
 import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import fr.juanvalero.tnttag.api.world.WorldService;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -29,8 +29,8 @@ public class IcyAreaItem extends ProjectileItem {
     private final WorldService worldService;
 
     @Inject
-    public IcyAreaItem(Plugin plugin, WorldService worldService) {
-        super(plugin);
+    public IcyAreaItem(Game game, Plugin plugin, WorldService worldService) {
+        super(game, plugin);
 
         this.plugin = plugin;
         this.worldService = worldService;
@@ -42,27 +42,27 @@ public class IcyAreaItem extends ProjectileItem {
     }
 
     @Override
-    protected int getCooldown() {
-        return 20;
+    protected Material getMaterial() {
+        return Material.SNOWBALL;
     }
 
     @Override
-    protected ItemStack getItemStack() {
-        return new ItemStackBuilder(Material.SNOWBALL)
-                .withName(
-                        Component
-                                .text("[", NamedTextColor.WHITE)
-                                .append(Component.text("Zone glacée", NamedTextColor.RED))
-                                .append(Component.text("]", NamedTextColor.WHITE))
-                )
-                .withLore(
-                        Component
-                                .text("[", NamedTextColor.WHITE)
-                                .append(Component.keybind("key.use", NamedTextColor.RED))
-                                .append(Component.text("]", NamedTextColor.WHITE))
-                                .append(Component.text(" pour crée une zone de glace"))
-                )
-                .build();
+    protected String getName() {
+        return "Zone glacée";
+    }
+
+    @Override
+    protected Component[] getLore() {
+        return new TextComponent[]{Component
+                .text("[", NamedTextColor.WHITE)
+                .append(Component.keybind("key.use", NamedTextColor.RED))
+                .append(Component.text("]", NamedTextColor.WHITE))
+                .append(Component.text(" pour crée une zone de glace"))};
+    }
+
+    @Override
+    protected int getCooldown() {
+        return 20;
     }
 
     @Override

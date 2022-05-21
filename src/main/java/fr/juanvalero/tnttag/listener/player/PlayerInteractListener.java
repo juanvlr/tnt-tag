@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import javax.inject.Inject;
 
@@ -43,14 +42,12 @@ public class PlayerInteractListener implements Listener {
             if (itemStack != null) {
                 this.itemService.getItem(itemStack).ifPresent(item -> {
                     Player player = event.getPlayer();
-                    PlayerInventory inventory = player.getInventory();
-                    int slot = inventory.getHeldItemSlot();
 
-                    item.click(player, inventory, slot);
-
-                    if (!item.isUsed()) {
+                    if (!item.consume(player)) {
                         event.setCancelled(true);
                     }
+
+                    item.click(player, true);
                 });
             }
         }

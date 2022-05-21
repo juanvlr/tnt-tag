@@ -32,5 +32,6 @@ public class PlayerLaunchProjectileListener implements Listener {
         }
 
         this.itemService.launchProjectile(event.getItemStack(), event.getProjectile());
+        event.setShouldConsume(false);
     }
 }

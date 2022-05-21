@@ -18,23 +18,27 @@ import fr.juanvalero.tnttag.api.scoreboard.Scoreboard;
 import fr.juanvalero.tnttag.api.scoreboard.ScoreboardService;
 import fr.juanvalero.tnttag.api.utils.item.ItemStackBuilder;
 import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
+import fr.juanvalero.tnttag.api.world.WorldService;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -54,7 +58,9 @@ public class GameImpl implements Game {
     private final AutoStartRunnableFactory autoStartRunnableFactory;
     private final ItemService itemService;
     private final EventService eventService;
-    private final PlayerCollection players;
+
+    private final WorldService worldService;
+    private final PlayerCollection alivePlayers;
     private PlayerCollection taggedPlayers;
     private GameState state;
     private BukkitRunnable explosionRunnable;
@@ -67,7 +73,8 @@ public class GameImpl implements Game {
                     ExplosionRunnableFactory explosionRunnableFactory,
                     AutoStartRunnableFactory autoStartRunnableFactory,
                     ItemService itemService,
-                    EventService eventService) {
+                    EventService eventService,
+                    WorldService worldService) {
         this.scoreboardService = scoreboardService;
         this.scoreboardCreditUpdater = scoreboardCreditUpdater;
         this.plugin = plugin;
@@ -75,7 +82,8 @@ public class GameImpl implements Game {
         this.autoStartRunnableFactory = autoStartRunnableFactory;
         this.itemService = itemService;
         this.eventService = eventService;
-        this.players = new PlayerCollectionImpl();
+        this.worldService = worldService;
+        this.alivePlayers = new PlayerCollectionImpl();
         this.taggedPlayers = new PlayerCollectionImpl();
         this.state = GameState.WAITING;
     }
@@ -84,7 +92,7 @@ public class GameImpl implements Game {
     public void start() {
         if (this.configuration.allowItems()) {
             int itemAmount = this.configuration.getItemAmount();
-            this.players.forEach(player -> {
+            this.alivePlayers.forEach(player -> {
                 List<ItemStack> items = this.itemService.getRandomItems(itemAmount);
 
                 Inventory inventory = player.getInventory();
@@ -97,11 +105,11 @@ public class GameImpl implements Game {
             });
         }
 
-        this.players.forEach(player -> {
+        this.alivePlayers.forEach(player -> {
             Scoreboard scoreboard = this.scoreboardService.getScoreboard(player);
             scoreboard.empty();
 
-            scoreboard.updateLine(2, GameComponents.getAlivePlayerAmountMessage(this.players.count()));
+            scoreboard.updateLine(2, GameComponents.getAlivePlayerAmountMessage(this.alivePlayers.count()));
 
             player.showTitle(GameComponents.getStartMessage());
 
@@ -109,17 +117,14 @@ public class GameImpl implements Game {
 
             this.configuration.getStartLocation().ifPresent(player::teleport);
 
+            player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 1f, 1f);
+
             this.scoreboardCreditUpdater.removePlayer(player);
         });
 
         this.state = GameState.IN_GAME;
 
-        this.nextRound();
-    }
-
-    @Override
-    public boolean hasStarted() {
-        return this.state == GameState.IN_GAME;
+        this.nextRound(false);
     }
 
     @Override
@@ -145,14 +150,44 @@ public class GameImpl implements Game {
     public void stop() {
         this.explosionRunnable.cancel();
 
+        this.state = GameState.STOPPED;
+
         Bukkit.getOnlinePlayers().forEach(this.scoreboardService::deleteScoreboard);
 
-        this.state = GameState.STOPPED;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getOnlinePlayers().forEach(player -> {
+                    try {
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        DataOutputStream data = new DataOutputStream(out);
+
+                        data.writeUTF("Connect");
+                        data.writeUTF("lobby");
+
+                        data.flush();
+
+                        player.sendPluginMessage(GameImpl.this.plugin, "BungeeCord", out.toByteArray());
+                    } catch (ChannelNotRegisteredException e) {
+                        player.kick(Component.text("Partie terminée"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                GameImpl.this.state = GameState.WAITING;
+            }
+        }.runTaskLater(this.plugin, TickUtils.getTicks(10));
+    }
+
+    @Override
+    public boolean hasStarted() {
+        return this.state == GameState.IN_GAME;
     }
 
     @Override
     public boolean isClosed() {
-        return this.hasStarted() || this.state == GameState.STOPPED || this.players.count() == GameConstants.MAXIMUM_PLAYER_COUNT;
+        return this.hasStarted() || this.state == GameState.STOPPED || this.alivePlayers.count() == GameConstants.MAXIMUM_PLAYER_COUNT;
     }
 
     @Override
@@ -178,7 +213,9 @@ public class GameImpl implements Game {
         AttributeInstance damagerSpeedAttribute = damager.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
         damagerSpeedAttribute.setBaseValue(damagerSpeedAttribute.getBaseValue()); // Resets his speed
 
-        damager.clearTitle(); // Just in case
+        damager.sendMessage(Component.text("Vous avez taggé ", NamedTextColor.RED).append(Component.text(defender.getName())));
+
+        Bukkit.broadcast(Component.text(damager.getName()).append(Component.text(" a taggé ")).append(Component.text(defender.getName(), NamedTextColor.YELLOW)));
 
         this.taggedPlayers.add(defender);
         this.tagPlayer(defender);
@@ -188,16 +225,13 @@ public class GameImpl implements Game {
     public void blowUp() {
         this.taggedPlayers.forEach(victim -> {
             this.kill(victim, GameComponents.getExplosionMessage(victim));
-
-            if (this.configuration.isTntDestructive()) {
-                victim.getLocation().getWorld().spawnEntity(victim.getLocation(), EntityType.PRIMED_TNT);
-            }
+            victim.showTitle(Title.title(Component.text("Vous avez perdu !", NamedTextColor.RED), Component.empty()));
         });
     }
 
     @Override
     public void join(Player joiner) {
-        this.players.add(joiner);
+        this.alivePlayers.add(joiner);
 
         joiner.setGameMode(GameMode.ADVENTURE);
         this.clean(joiner);
@@ -206,8 +240,8 @@ public class GameImpl implements Game {
 
         this.scoreboardCreditUpdater.addPlayer(joiner);
 
-        this.players.forEach(player -> {
-                    player.sendMessage(GameComponents.getConnectionMessage(joiner, this.players.count()));
+        this.alivePlayers.forEach(player -> {
+                    player.sendMessage(GameComponents.getConnectionMessage(joiner, this.alivePlayers.count()));
 
                     // We don't want to update the scoreboard if the game is starting
                     // Regular starting : the minimum amount of players has already been reached
@@ -219,7 +253,7 @@ public class GameImpl implements Game {
                 }
         );
 
-        if (!this.isFastStarting() && this.players.count() == GameConstants.MINIMUM_PLAYER_COUNT) {
+        if (!this.isFastStarting() && this.alivePlayers.count() == GameConstants.MINIMUM_PLAYER_COUNT) {
             // We now have the needed amount of players to start the game
             this.state = GameState.REGULAR_STARTING;
 
@@ -232,42 +266,42 @@ public class GameImpl implements Game {
 
     @Override
     public void leave(Player leaver) {
+        if (this.state == GameState.STOPPED) {
+            this.alivePlayers.remove(leaver);
+
+            return;
+        }
+
         if (this.hasStarted()) {
             this.kill(leaver, GameComponents.getDisconnectionDeathMessage(leaver));
         } else {
-            this.players.remove(leaver);
+            this.alivePlayers.remove(leaver);
 
-            if (this.state != GameState.STOPPED) {
-                this.players.forEach(player ->
-                        player.sendMessage(GameComponents.getDisconnectionMessage(leaver, this.players.count()))
-                );
+            this.alivePlayers.forEach(player ->
+                    player.sendMessage(GameComponents.getDisconnectionMessage(leaver, this.alivePlayers.count()))
+            );
 
-                if (this.state == GameState.WAITING) {
-                    this.players.forEach(this::updateMissingPlayerCount);
-                } else if ((this.isFastStarting() && this.players.count() == 1) || (this.isRegularStarting() && this.players.count() < GameConstants.MINIMUM_PLAYER_COUNT)) {
-                    // There are not enough players left to start the game
-                    this.autoStartRunnable.cancel();
-                    this.players.forEach(player -> {
-                        this.updateMissingPlayerCount(player);
-                        player.clearTitle();
-                    }); // Reset the scoreboard to the waiting state and the title if any
-                    this.state = GameState.WAITING;
-                }
+            if (this.state == GameState.WAITING) {
+                this.alivePlayers.forEach(this::updateMissingPlayerCount);
+            } else if ((this.isFastStarting() && this.alivePlayers.count() == 1) || (this.isRegularStarting() && this.alivePlayers.count() < GameConstants.MINIMUM_PLAYER_COUNT)) {
+                // There are not enough players left to start the game
+                this.autoStartRunnable.cancel();
+                this.alivePlayers.forEach(player -> {
+                    this.updateMissingPlayerCount(player);
+                    player.clearTitle();
+                }); // Reset the scoreboard to the waiting state and the title if any
+                this.state = GameState.WAITING;
             }
 
-            if (this.state == GameState.WAITING || this.isFastStarting()) {
-                this.scoreboardCreditUpdater.removePlayer(leaver);
-            }
+            this.scoreboardCreditUpdater.removePlayer(leaver);
         }
 
-        if (this.state != GameState.STOPPED) {
-            this.scoreboardService.deleteScoreboard(leaver);
-        }
+        this.scoreboardService.deleteScoreboard(leaver);
     }
 
     @Override
-    public PlayerCollection getPlayers() {
-        return this.players;
+    public PlayerCollection getAlivePlayers() {
+        return this.alivePlayers;
     }
 
     @Override
@@ -282,7 +316,7 @@ public class GameImpl implements Game {
 
     @Override
     public boolean isSpectator(Player player) {
-        return !this.players.contains(player);
+        return !this.alivePlayers.contains(player);
     }
 
     /**
@@ -330,27 +364,29 @@ public class GameImpl implements Game {
      */
     private void updateMissingPlayerCount(Player player) {
         this.scoreboardService.getScoreboard(player)
-                .updateLine(4, GameComponents.getMissingPlayerCountMessage(this.players.count()));
+                .updateLine(4, GameComponents.getMissingPlayerCountMessage(this.alivePlayers.count()));
     }
 
     /**
      * Jumps to the next round by choosing tagged players and starting the explosion timer.
+     *
+     * @param shouldTriggerEvent Determines if an event should be triggered
      */
-    private void nextRound() {
-        int taggedPlayersAmount = this.players.count() / 2;
-        this.taggedPlayers = this.players.getRandoms(taggedPlayersAmount);
+    private void nextRound(boolean shouldTriggerEvent) {
+        int taggedPlayersAmount = this.alivePlayers.count() / 2;
+        this.taggedPlayers = this.alivePlayers.getRandoms(taggedPlayersAmount);
 
         this.taggedPlayers.forEach(this::tagPlayer);
 
         this.explosionRunnable = this.explosionRunnableFactory.createExplosionRunnable();
         this.explosionRunnable.runTaskTimer(this.plugin, 0L, TickUtils.TICKS_PER_SECOND);
 
-        if (this.configuration.isEventEnabled()) {
+        if (shouldTriggerEvent && this.configuration.isEventEnabled()) {
             if (new Random().nextInt(2) == 0) {
                 Event event = this.eventService.getRandomEvent();
                 event.run();
 
-                this.players.forEach(player -> player.showTitle(
+                this.alivePlayers.forEach(player -> player.showTitle(
                                 Title.title(
                                         Component.text(event.getName()),
                                         event.getDuration() > 0
@@ -374,43 +410,46 @@ public class GameImpl implements Game {
         victim.setGameMode(GameMode.SPECTATOR);
         this.clean(victim);
 
+        this.alivePlayers.remove(victim);
+
+        if (this.taggedPlayers.contains(victim)) {
+            this.taggedPlayers.remove(victim);
+
+            Location location = victim.getLocation();
+            TNTPrimed tnt = (TNTPrimed) location.getWorld().spawnEntity(location, EntityType.PRIMED_TNT);
+            tnt.setFuseTicks(0);
+
+            location.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, location, 10);
+
+            Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f));
+        }
+
         Bukkit.getOnlinePlayers().forEach(player -> {
-            player.sendMessage(reason);
-            this.scoreboardService.getScoreboard(player)
-                    .updateLine(2, GameComponents.getAlivePlayerAmountMessage(this.players.count()));
+                    player.sendMessage(reason);
+                    this.scoreboardService.getScoreboard(player)
+                            .updateLine(2, GameComponents.getAlivePlayerAmountMessage(this.alivePlayers.count()));
                 }
         );
 
-        this.players.remove(victim);
-
-        if (this.players.count() == 1) {
+        if (this.alivePlayers.count() == 1) {
             // Last player, we've found the winner !
-            Player winner = this.players.getFirst();
-            Bukkit.getOnlinePlayers().forEach(player -> {
-                player.sendMessage(GameComponents.getWinMessage(winner));
-                //noinspection Convert2MethodRef - Lambda expressions seems to be bugged here
-                this.configuration.getLobbyLocation().ifPresent(location -> player.teleport(location));
-                player.getInventory().clear();
-            });
+            Player winner = this.alivePlayers.getFirst();
+            Bukkit.broadcast(GameComponents.getWinMessage(winner));
+
+            winner.showTitle(Title.title(Component.text("Vous avez gagné !", NamedTextColor.GREEN), Component.empty()));
 
             this.stop();
 
             return;
         }
 
-        if (this.taggedPlayers.contains(victim)) {
-            this.taggedPlayers.remove(victim);
-
-            if (this.taggedPlayers.isEmpty()) {
-                this.explosionRunnable.cancel();
-                this.nextRound();
-            }
+        if (this.taggedPlayers.isEmpty()) {
+            this.explosionRunnable.cancel();
+            this.nextRound(true);
         }
     }
 
     private void tagPlayer(Player player) {
-        player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f);
-
         PlayerInventory inventory = player.getInventory();
 
         inventory.setHelmet(new ItemStack(Material.TNT));
@@ -428,11 +467,13 @@ public class GameImpl implements Game {
         defenderSpeedAttribute.setBaseValue(defenderSpeedAttribute.getBaseValue() * 1.05); // Small speed boost
 
         player.setCompassTarget(
-                this.getPlayers()
+                this.getAlivePlayers()
                         .filter(p -> !this.isTagged(p))
                         .getClosestLocation(player)
         );
 
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1f, 1f);
         player.showTitle(GameComponents.getTagMessage());
+        this.worldService.spawnFirework(player.getLocation());
     }
 }
