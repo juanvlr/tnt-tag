@@ -19,16 +19,15 @@ public class GameComponents {
     private static final Component[] CREDIT_MESSAGES = new Component[]{
             Component.text("➤ Imaginé par Spik’ & Loomi’", NamedTextColor.GREEN),
             Component.text("➤ Développé par Choukas", NamedTextColor.LIGHT_PURPLE),
-            Component.text("➤ Build par ???", NamedTextColor.BLUE)
+            Component.text("➤ Build par Darkvodou", NamedTextColor.BLUE)
     };
 
     public static Component getConnectionMessage(Player player, int playerCount) {
         return Component
                 .empty()
                 .color(NamedTextColor.GRAY)
-                .append(Component.text("[TNT-TAG]", NamedTextColor.RED))
-                .append(Component.text(" ["))
-                .append(Component.text("✔", NamedTextColor.GREEN))
+                .append(Component.text("["))
+                .append(Component.text("+", NamedTextColor.GREEN))
                 .append(Component.text("] "))
                 .append(Component.text(player.getName(), NamedTextColor.GREEN))
                 .append(Component.text(" a rejoint la partie ! "))
@@ -43,11 +42,10 @@ public class GameComponents {
         return Component
                 .empty()
                 .color(NamedTextColor.GRAY)
-                .append(Component.text("[TNT-TAG]", NamedTextColor.RED))
-                .append(Component.text(" ["))
-                .append(Component.text("✖").color(NamedTextColor.RED))
+                .append(Component.text("["))
+                .append(Component.text("-").color(NamedTextColor.RED))
                 .append(Component.text("] "))
-                .append(Component.text(player.getName()).color(NamedTextColor.GREEN))
+                .append(Component.text(player.getName()).color(NamedTextColor.RED))
                 .append(Component.text(" a quitté la partie ! "))
                 .append(Component.text("("))
                 .append(Component.text(playerCount))
@@ -57,7 +55,7 @@ public class GameComponents {
     }
 
     public static Component getGameTitle() {
-        return Component.text("TNT-TAG", NamedTextColor.DARK_PURPLE);
+        return Component.text("TNT-TAG", NamedTextColor.RED);
     }
 
     public static Component getCreditMessage(int n) {
@@ -72,20 +70,20 @@ public class GameComponents {
         return Component
                 .text("Lancement dans ")
                 .append(Component.text(remainingTime).color(NamedTextColor.GREEN))
-                .append(Component.text(" seconde(s)"));
+                .append(Component.text(" seconde(s)..."));
     }
 
     public static Component getMissingPlayerCountMessage(int playerCount) {
         return Component
                 .empty()
                 .color(NamedTextColor.GRAY)
-                .append(Component.text("En attente"))
+                .append(Component.text("En attente..."))
                 .append(Component.text(" "))
-                .append(Component.text("("))
-                .append(Component.text(playerCount))
-                .append(Component.text("/"))
-                .append(Component.text(GameConstants.MINIMUM_PLAYER_COUNT))
-                .append(Component.text(")"));
+                .append(Component.text("(", NamedTextColor.DARK_GRAY))
+                .append(Component.text(playerCount, NamedTextColor.DARK_GRAY))
+                .append(Component.text("/", NamedTextColor.DARK_GRAY))
+                .append(Component.text(GameConstants.MINIMUM_PLAYER_COUNT, NamedTextColor.DARK_GRAY))
+                .append(Component.text(")", NamedTextColor.DARK_GRAY));
     }
 
     public static Title getStartMessage() {
@@ -93,28 +91,28 @@ public class GameComponents {
     }
 
     public static Component getDisconnectionDeathMessage(Player leaver) {
-        return Component.text(leaver.getName(), NamedTextColor.GREEN)
-                .append(Component.text(" s'est déconnecté !"));
+        return Component.text(leaver.getName(), NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(" s'est déconnecté(e) !"));
     }
 
     public static Title getTagMessage() {
         return Title.title(
-                Component.text("Tu es tagé !", NamedTextColor.RED),
+                Component.text("Vous êtes marqué(e) !", NamedTextColor.RED),
                 Component.empty()
         );
     }
 
     public static Component getExplosionMessage(Player victim) {
-        return Component.text(victim.getName(), NamedTextColor.RED).append(Component.text(" a explosé !"));
+        return Component.text(victim.getName(), NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(" a explosé !", NamedTextColor.RED));
     }
-
     public static Component getAlivePlayerAmountMessage(int amount) {
         return Component.text(amount, NamedTextColor.GREEN)
-                .append(Component.text(" joueurs en vie"));
+                .append(Component.text(" joueurs restants..."));
     }
 
     public static Component getWinMessage(Player winner) {
         return Component.text(winner.getName(), NamedTextColor.GOLD, TextDecoration.BOLD)
-                .append(Component.text(" a gagné !"));
+                .append(Component.text(" a remporté la partie !", NamedTextColor.GOLD, TextDecoration.BOLD));
     }
 }

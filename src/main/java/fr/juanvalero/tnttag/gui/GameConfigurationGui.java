@@ -219,7 +219,7 @@ public class GameConfigurationGui {
         mainGui.addPane(patternPane);
 
         Pane tntDestructionButton = createTitleToggleButton(
-                new TitleToggleButton(3, 2, this.configuration.isTntDestructive(), "Tnt", Material.TNT),
+                new TitleToggleButton(3, 2, this.configuration.isTntDestructive(), "Explosions", Material.TNT),
                 new TitleToggleButtonItem("Activée", event -> this.configuration.enableTntDestruction()),
                 new TitleToggleButtonItem("Désactivée", event -> this.configuration.disableTntDestruction())
         );

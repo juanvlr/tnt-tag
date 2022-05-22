@@ -21,6 +21,7 @@ import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import fr.juanvalero.tnttag.api.world.WorldService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -112,8 +113,6 @@ public class GameImpl implements Game {
             scoreboard.updateLine(2, GameComponents.getAlivePlayerAmountMessage(this.alivePlayers.count()));
 
             player.showTitle(GameComponents.getStartMessage());
-
-            player.sendMessage(Component.text("La partie commence.. Fuyez pauvre fou !"));
 
             this.configuration.getStartLocation().ifPresent(player::teleport);
 
@@ -213,9 +212,8 @@ public class GameImpl implements Game {
         AttributeInstance damagerSpeedAttribute = damager.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
         damagerSpeedAttribute.setBaseValue(damagerSpeedAttribute.getBaseValue()); // Resets his speed
 
-        damager.sendMessage(Component.text("Vous avez taggé ", NamedTextColor.RED).append(Component.text(defender.getName())));
-
-        Bukkit.broadcast(Component.text(damager.getName()).append(Component.text(" a taggé ")).append(Component.text(defender.getName(), NamedTextColor.YELLOW)));
+        Bukkit.broadcast(Component.text(defender.getName(), NamedTextColor.DARK_GRAY)
+                .append(Component.text(" est marqué(e)", NamedTextColor.GRAY)));
 
         this.taggedPlayers.add(defender);
         this.tagPlayer(defender);
@@ -225,7 +223,7 @@ public class GameImpl implements Game {
     public void blowUp() {
         this.taggedPlayers.forEach(victim -> {
             this.kill(victim, GameComponents.getExplosionMessage(victim));
-            victim.showTitle(Title.title(Component.text("Vous avez perdu !", NamedTextColor.RED), Component.empty()));
+            victim.showTitle(Title.title(Component.text("DÉFAITE", NamedTextColor.RED), Component.empty()));
         });
     }
 
@@ -436,7 +434,7 @@ public class GameImpl implements Game {
             Player winner = this.alivePlayers.getFirst();
             Bukkit.broadcast(GameComponents.getWinMessage(winner));
 
-            winner.showTitle(Title.title(Component.text("Vous avez gagné !", NamedTextColor.GREEN), Component.empty()));
+            winner.showTitle(Title.title(Component.text("VICTOIRE", NamedTextColor.GREEN), Component.empty()));
 
             this.stop();
 
