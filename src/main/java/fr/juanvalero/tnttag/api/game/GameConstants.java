@@ -14,7 +14,7 @@ public class GameConstants {
     /**
      * The maximum amount of players in the game
      */
-    public static final int MAXIMUM_PLAYER_COUNT = 20;
+    public static final int MAXIMUM_PLAYER_COUNT = 32;
 
     /**
      * The maximum amount of items to be given
