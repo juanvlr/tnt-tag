@@ -45,6 +45,12 @@ java {
 }
 
 tasks {
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+}
+
+tasks {
     jar {
         dependsOn("shadowJar")
     }
