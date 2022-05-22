@@ -21,7 +21,6 @@ import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import fr.juanvalero.tnttag.api.world.WorldService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;

@@ -9,10 +9,7 @@ import fr.juanvalero.tnttag.api.game.item.Item;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
@@ -70,7 +67,7 @@ public class RepulsionItem extends Item {
         location.getWorld().spawnParticle(Particle.FLAME, location, 5);
 
         // Nearby players except the player himself
-        location.getNearbyPlayers(RADIUS, nearbyPlayer -> !nearbyPlayer.getUniqueId().equals(player.getUniqueId()))
+        location.getNearbyPlayers(RADIUS, nearbyPlayer -> !nearbyPlayer.getUniqueId().equals(player.getUniqueId()) && nearbyPlayer.getGameMode() != GameMode.SPECTATOR)
                 .forEach(nearbyPlayer -> {
                     Vector playerDirection = nearbyPlayer.getLocation().getDirection();
                     nearbyPlayer.setVelocity(playerDirection.multiply(-1.5).setY(1));

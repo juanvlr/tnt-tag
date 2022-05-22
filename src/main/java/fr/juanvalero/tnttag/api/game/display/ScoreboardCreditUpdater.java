@@ -52,7 +52,7 @@ public class ScoreboardCreditUpdater {
             }
         };
 
-        scoreboardUpdater.runTaskTimer(this.plugin, 0, TickUtils.TICKS_PER_SECOND);
+        scoreboardUpdater.runTaskTimer(this.plugin, 0, TickUtils.getTicks(3));
 
         this.scoreboards.put(player.getUniqueId(), scoreboardUpdater);
     }
