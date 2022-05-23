@@ -55,6 +55,6 @@ public class DashItem extends Item {
     @Override
     protected void action(Player player) {
         Vector playerDirection = player.getLocation().getDirection();
-        player.setVelocity(playerDirection.multiply(1.5).setY(1));
+        player.setVelocity(playerDirection.multiply(1.5).setY(0.5));
     }
 }
