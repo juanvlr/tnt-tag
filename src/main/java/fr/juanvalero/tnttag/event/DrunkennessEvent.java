@@ -24,8 +24,8 @@ public class DrunkennessEvent extends Event {
     @Override
     public void run() {
         this.game.getAlivePlayers().forEach(player -> {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, TickUtils.getTicks(10), 1));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, TickUtils.getTicks(10), 2));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, TickUtils.getTicks(20), 1));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, TickUtils.getTicks(20), 2));
         });
     }
 
@@ -36,11 +36,11 @@ public class DrunkennessEvent extends Event {
 
     @Override
     public String getdescription() {
-        return "§9L'abus d'alcool est dangereux pour la santé." + "\n\n" + "§9Cet évènement donne l'effet §e[Nausée] §9ainsi que l'effet §e[Speed] §9à tous les joueurs de la partie pendant 10 secondes.";
+        return "§9L'abus d'alcool est dangereux pour la santé." + "\n\n" + "§9Cet évènement donne l'effet §e[Nausée] §9ainsi que l'effet §e[Speed] §9à tous les joueurs de la partie pendant 20 secondes.";
     }
 
     @Override
     public int getDuration() {
-        return 10;
+        return 20;
     }
 }
