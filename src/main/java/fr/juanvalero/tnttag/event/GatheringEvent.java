@@ -35,6 +35,11 @@ public class GatheringEvent extends Event {
     }
 
     @Override
+    public String getdescription() {
+        return "§9À l'assaut !" + "\n\n" + "§9Cet évènement téléporte tous les joueurs au centre de la map.";
+    }
+
+    @Override
     public int getDuration() {
         return 0;
     }

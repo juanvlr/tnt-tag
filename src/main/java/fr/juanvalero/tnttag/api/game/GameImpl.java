@@ -21,6 +21,7 @@ import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import fr.juanvalero.tnttag.api.world.WorldService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -385,7 +386,7 @@ public class GameImpl implements Game {
 
                 this.alivePlayers.forEach(player -> player.showTitle(
                                 Title.title(
-                                        Component.text(event.getName()),
+                                        Component.text(event.getName(), NamedTextColor.BLUE),
                                         event.getDuration() > 0
                                                 ? (Component.text(event.getDuration()).append(Component.text(" secondes")))
                                                 : (Component.text("Instantanée")
@@ -393,6 +394,7 @@ public class GameImpl implements Game {
                                 )
                         )
                 );
+                Bukkit.broadcastMessage("§9=================================\n" + "§e["+ event.getName() + "]§9\n\n" + event.getdescription() + "\n=================================");
             }
         }
     }

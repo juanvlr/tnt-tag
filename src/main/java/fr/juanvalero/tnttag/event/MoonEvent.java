@@ -31,7 +31,12 @@ public class MoonEvent extends Event {
 
     @Override
     public String getName() {
-        return "Lunaire";
+        return "Gravité Lunaire";
+    }
+
+    @Override
+    public String getdescription() {
+        return "§9Un p'tit voyage dans l'espace ?" + "\n\n" +  "§9Cet évènement donne l'effet §e[Jump Boost] §9ainsi que l'effet §e[Slow Fall] §9à tous les joueurs de la partie pendant 30 secondes.";
     }
 
     @Override

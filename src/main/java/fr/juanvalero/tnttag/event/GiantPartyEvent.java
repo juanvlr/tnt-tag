@@ -38,6 +38,11 @@ public class GiantPartyEvent extends Event {
     }
 
     @Override
+    public String getdescription() {
+        return "§9Un p'tit bout de gâteau ?" + "\n\n" + "Cet évènement donne l'effet §e[Glowing] §9et des feux d'artifices apparaissent sur tous les joueurs de la partie pendant 20 secondes.";
+    }
+
+    @Override
     public int getDuration() {
         return 20;
     }

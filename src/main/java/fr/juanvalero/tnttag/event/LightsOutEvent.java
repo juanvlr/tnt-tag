@@ -31,7 +31,12 @@ public class LightsOutEvent extends Event {
 
     @Override
     public String getName() {
-        return "Extinction";
+        return "Blackout";
+    }
+
+    @Override
+    public String getdescription() {
+        return "§9Qui a éteint la lumière ?" + "\n\n" + "§9Cet évènement donne l'effet §e[Blindness] §9à tous les joueurs de la partie pendant 30 secondes.";
     }
 
     @Override

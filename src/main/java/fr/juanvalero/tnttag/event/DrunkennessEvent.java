@@ -35,6 +35,11 @@ public class DrunkennessEvent extends Event {
     }
 
     @Override
+    public String getdescription() {
+        return "§9L'abus d'alcool est dangereux pour la santé." + "\n\n" + "§9Cet évènement donne l'effet §e[Nausée] §9ainsi que l'effet §e[Speed] §9à tous les joueurs de la partie pendant 10 secondes.";
+    }
+
+    @Override
     public int getDuration() {
         return 10;
     }

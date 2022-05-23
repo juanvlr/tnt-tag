@@ -17,5 +17,7 @@ public abstract class Event {
 
     public abstract String getName();
 
+    public abstract String getdescription();
+
     public abstract int getDuration();
 }
