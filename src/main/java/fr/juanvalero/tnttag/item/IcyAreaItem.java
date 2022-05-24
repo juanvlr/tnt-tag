@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class IcyAreaItem extends ProjectileItem {
 
-    private static final int RADIUS = 2;
+    private static final int RADIUS = 1;
 
     private final Plugin plugin;
     private final WorldService worldService;

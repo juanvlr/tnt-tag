@@ -103,4 +103,9 @@ public class PlayerCollectionImpl implements PlayerCollection {
 
         return closestLocation;
     }
+
+    @Override
+    public void clear() {
+        this.players.clear();
+    }
 }

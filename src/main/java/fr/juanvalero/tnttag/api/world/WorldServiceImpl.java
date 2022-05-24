@@ -57,8 +57,10 @@ public class WorldServiceImpl implements WorldService {
     public List<Block> getNearbyBlocks(Location center, int radius) {
         List<Block> blocks = new ArrayList<>();
         for (int x = center.getBlockX() - radius; x <= center.getBlockX() + radius; x++) {
-            for (int z = center.getBlockZ() - radius; z <= center.getBlockZ() + radius; z++) {
-                blocks.add(center.getWorld().getBlockAt(x, center.getBlockY(), z));
+            for (int y = center.getBlockY(); y <= center.getBlockY() + radius; y++) {
+                for (int z = center.getBlockZ() - radius; z <= center.getBlockZ() + radius; z++) {
+                    blocks.add(center.getWorld().getBlockAt(x, y, z));
+                }
             }
         }
 

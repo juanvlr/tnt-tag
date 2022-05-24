@@ -49,6 +49,8 @@ import java.util.Random;
 @SuppressWarnings("ConstantConditions")
 public class GameImpl implements Game {
 
+    private static final double DEFAULT_SPEED = 0.1;
+
     @Inject
     private Configuration configuration;
 
@@ -59,7 +61,6 @@ public class GameImpl implements Game {
     private final AutoStartRunnableFactory autoStartRunnableFactory;
     private final ItemService itemService;
     private final EventService eventService;
-
     private final WorldService worldService;
     private final PlayerCollection alivePlayers;
     private PlayerCollection taggedPlayers;
@@ -151,6 +152,9 @@ public class GameImpl implements Game {
 
         this.state = GameState.STOPPED;
 
+        this.alivePlayers.clear();
+        this.taggedPlayers.clear();
+
         Bukkit.getOnlinePlayers().forEach(this.scoreboardService::deleteScoreboard);
 
         new BukkitRunnable() {
@@ -210,7 +214,7 @@ public class GameImpl implements Game {
         damagerInventory.setItem(7, null);
 
         AttributeInstance damagerSpeedAttribute = damager.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-        damagerSpeedAttribute.setBaseValue(damagerSpeedAttribute.getBaseValue()); // Resets his speed
+        damagerSpeedAttribute.setBaseValue(DEFAULT_SPEED); // Resets his speed
 
         Bukkit.broadcast(Component.text(defender.getName(), NamedTextColor.DARK_GRAY)
                 .append(Component.text(" est marqué(e)", NamedTextColor.GRAY)));
@@ -463,7 +467,7 @@ public class GameImpl implements Game {
         );
 
         AttributeInstance defenderSpeedAttribute = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-        defenderSpeedAttribute.setBaseValue(defenderSpeedAttribute.getBaseValue() * 1.05); // Small speed boost
+        defenderSpeedAttribute.setBaseValue(DEFAULT_SPEED * 1.10); // Small speed boost
 
         player.setCompassTarget(
                 this.getAlivePlayers()

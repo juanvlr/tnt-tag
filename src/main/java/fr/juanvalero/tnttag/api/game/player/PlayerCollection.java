@@ -86,4 +86,6 @@ public interface PlayerCollection extends Cloneable {
     Location getClosestLocation(Player player);
 
     Location getClosestLocation(Player player, Location excludedPlayerLocation);
+
+    void clear();
 }
