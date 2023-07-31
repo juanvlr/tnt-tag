@@ -82,7 +82,10 @@ public class IcyAreaItem extends ProjectileItem {
             public void run() {
                 int nearbyBlocksAmount = nearbyBlocks.size();
                 for (int i = 0; i < nearbyBlocksAmount; i++) {
-                    nearbyBlocks.get(i).setType(nearbyBlockTypes.get(i));
+                    Material nearbyBlockType = nearbyBlockTypes.get(i);
+                    if (nearbyBlockType != Material.PACKED_ICE) {
+                        nearbyBlocks.get(i).setType(nearbyBlockTypes.get(i));
+                    }
                 }
             }
         }.runTaskLater(this.plugin, TickUtils.getTicks(5));

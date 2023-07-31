@@ -21,7 +21,6 @@ import fr.juanvalero.tnttag.api.utils.scheduler.TickUtils;
 import fr.juanvalero.tnttag.api.world.WorldService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -467,7 +466,7 @@ public class GameImpl implements Game {
         );
 
         AttributeInstance defenderSpeedAttribute = player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-        defenderSpeedAttribute.setBaseValue(DEFAULT_SPEED * 1.10); // Small speed boost
+        defenderSpeedAttribute.setBaseValue(DEFAULT_SPEED * 1.20); // Small speed boost
 
         player.setCompassTarget(
                 this.getAlivePlayers()
